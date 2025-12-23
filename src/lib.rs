@@ -18,10 +18,10 @@ fn check_csl(csl: &str) -> Option<String> {
 #[pyfunction]
 fn reference(entires: &str, style: &str) -> PyResult<String> {
     let style = IndependentStyle::from_xml(style).map_err(|e| {
-        pyo3::exceptions::PyValueError::new_err(format!("CSL parse error: {:?}", e))
+        pyo3::exceptions::PyValueError::new_err(format!("CSL file malformed: {:?}", e))
     })?;
     let entries: Vec<csl_json::Item> = serde_json::from_str(entires).map_err(|e| {
-        pyo3::exceptions::PyValueError::new_err(format!("Input JSON parse error: {:?}", e))
+        pyo3::exceptions::PyValueError::new_err(format!("CSL-JSON file malformed: {:?}", e))
     })?;
 
     let locales = locales();
@@ -45,7 +45,7 @@ fn reference(entires: &str, style: &str) -> PyResult<String> {
     let mut output = String::new();
     for row in result.bibliography.map(|b| b.items).unwrap_or_default() {
         if let Some(prefix) = row.first_field {
-            output.push_str(&format!("{prefix:#}\n"));
+            output.push_str(&format!("{prefix:#}\t"));
         }
         output.push_str(&format!("{:#}\n", row.content));
     }
