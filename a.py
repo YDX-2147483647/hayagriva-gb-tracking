@@ -14,6 +14,7 @@ expected_output = "".join(
 Path("expected-output.txt").write_text(expected_output, encoding="utf-8")
 
 csl = Path("GB-T-7714—2015（顺序编码，双语）.csl").read_text(encoding="utf-8")
+assert check_csl(csl) is None
 
 entries: list[dict[str, Any]] = json.loads(
     Path("gbt7714-data.json").read_text(encoding="utf-8")
@@ -36,8 +37,11 @@ for entry in entries:
 # https://github.com/zotero-chinese/styles/blob/ce0786d7/lib/data/index.ts#L103
 entries.sort(key=lambda e: e["id"])
 
-assert check_csl(csl) is None
+actual_output = reference(json.dumps(entries, ensure_ascii=False), csl)
+Path("actual-output.txt").write_text(actual_output, encoding="utf-8")
 
-Path("actual-output.txt").write_text(
-    reference(json.dumps(entries, ensure_ascii=False), csl), encoding="utf-8"
-)
+n = 0
+for expected, actual in zip(expected_output.splitlines(), actual_output.splitlines()):
+    if expected != actual:
+        n += 1
+        print(f"{n:3} Expected: {expected}\n    Actual:   {actual}\n")
