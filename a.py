@@ -5,8 +5,8 @@ from typing import Any
 
 from hayagriva import check_csl, reference
 
-expected_output = "\n".join(
-    "\t".join("".join(col.itertext()) for col in row)
+expected_output = "".join(
+    "\t".join("".join(col.itertext()) for col in row) + "\n"
     for row in (
         ET.parse("expected-output.html").getroot().findall(".//div[@class='csl-entry']")
     )
@@ -18,6 +18,7 @@ csl = Path("GB-T-7714—2015（顺序编码，双语）.csl").read_text(encoding
 entries: list[dict[str, Any]] = json.loads(
     Path("gbt7714-data.json").read_text(encoding="utf-8")
 )
+
 # Make entries acceptable by citationberg.
 for entry in entries:
     # citationberg requires DateValue has either `raw` or `date-parts`.
@@ -30,6 +31,10 @@ for entry in entries:
             f"Trying to normalize a new entry in CSL-JSON: {entry['id']}. Check if it is expected."
         )
         issued["date-parts"] = [[-2161]]  # Add dummy `date-parts`
+
+# Sort entries to be consistent with zotero-chinese.
+# https://github.com/zotero-chinese/styles/blob/ce0786d7/lib/data/index.ts#L103
+entries.sort(key=lambda e: e["id"])
 
 assert check_csl(csl) is None
 
