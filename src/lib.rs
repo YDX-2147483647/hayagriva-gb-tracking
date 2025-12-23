@@ -15,6 +15,8 @@ fn check_csl(csl: &str) -> Option<String> {
 }
 
 /// Format a bibliography of all entries.
+///
+/// At present, the support for CSL is still quite limited. Therefore, this function returns tab-separated plain text rather than stylized HTML.
 #[pyfunction]
 fn reference(entires: &str, style: &str) -> PyResult<String> {
     let style = IndependentStyle::from_xml(style).map_err(|e| {

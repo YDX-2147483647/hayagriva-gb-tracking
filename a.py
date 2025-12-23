@@ -13,9 +13,7 @@ expected_output = "\n".join(
 )
 Path("expected-output.txt").write_text(expected_output, encoding="utf-8")
 
-csl = Path("GB-T-7714—2025（征求意见稿，顺序编码，双语）.csl").read_text(
-    encoding="utf-8"
-)
+csl = Path("GB-T-7714—2015（顺序编码，双语）.csl").read_text(encoding="utf-8")
 
 entries: list[dict[str, Any]] = json.loads(
     Path("gbt7714-data.json").read_text(encoding="utf-8")

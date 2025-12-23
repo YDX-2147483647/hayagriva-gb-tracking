@@ -7,5 +7,5 @@ uv venv
 maturin develop --release
 
 uv run a.py
-diff expected-output.txt actual-output.txt        
+code --diff expected-output.txt actual-output.txt
 ```
