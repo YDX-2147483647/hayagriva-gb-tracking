@@ -5,7 +5,9 @@ from typing import Literal
 
 import regex  # for matching the Unicode script property
 
-type Ignorance = Literal["page", "lang", "case", "卷", "escape", "space"]
+type Ignorance = Literal[
+    "page", "lang", "case", "卷", "escape", "han_space", "code_space"
+]
 
 
 def _ignore(x: str, /, *actions: Ignorance) -> str:
@@ -18,7 +20,7 @@ def _ignore(x: str, /, *actions: Ignorance) -> str:
 
         match action:
             case "page":
-                x = re.sub(r": [-\d]+", "", x)
+                x = regex.sub(r": [-\d]+(\p{Punctuation})", r"\1", x)
             case "lang":
                 x = _map_zh_to_bilingual(x)
             case "case":
@@ -27,8 +29,13 @@ def _ignore(x: str, /, *actions: Ignorance) -> str:
                 x = x.replace(": 卷 ", ": ")
             case "escape":
                 x = x.replace(R"\-", "-")
-            case "space":
-                x = x.replace(" ", "")
+            case "han_space":
+                x = regex.sub(r"(?<=\p{script=Han})\s+(?=\P{script=Han})", "", x)
+                x = regex.sub(r"(?<=\P{script=Han})\s+(?=\p{script=Han})", "", x)
+                # These actions assume the existence of spaces
+                forbidden.update({"lang", "page", "卷"})
+            case "code_space":
+                x = re.sub(r"(?<=[\da-zA-Z])\s+(?=[\da-zA-Z])", "", x)
                 # These actions assume the existence of spaces
                 forbidden.update({"lang", "page", "卷"})
 
@@ -58,38 +65,43 @@ class Difference:
                 [
                     {
                         "page": _eq_ignore(a, b, "page"),
-                        "page+space": _eq_ignore(a, b, "page", "space"),
-                        "page+escape+space": _eq_ignore(
-                            a, b, "page", "escape", "space"
+                        "page+code_space": _eq_ignore(a, b, "page", "code_space"),
+                        "page+escape+code_space": _eq_ignore(
+                            a, b, "page", "escape", "code_space"
                         ),
                     },
                     {
                         "lang": _eq_ignore(a, b, "lang"),
                         "lang+case": _eq_ignore(a, b, "lang", "case"),
-                        "lang+case+space": _eq_ignore(a, b, "lang", "case", "space"),
+                        "lang+case+han_space": _eq_ignore(
+                            a, b, "lang", "case", "han_space"
+                        ),
                     },
                     {"lang+page": _eq_ignore(a, b, "lang", "page")},
                     {
                         "卷": _eq_ignore(a, b, "卷"),
-                        "卷+space": _eq_ignore(a, b, "卷", "space"),
-                        "卷+page+space": _eq_ignore(a, b, "卷", "page", "space"),
+                        "卷+han_space": _eq_ignore(a, b, "卷", "han_space"),
+                        "卷+page+han_space": _eq_ignore(
+                            a, b, "卷", "page", "han_space"
+                        ),
                     },
                     {"卷+page": _eq_ignore(a, b, "卷", "page")},
-                    {
-                        "escape": _eq_ignore(a, b, "escape"),
-                        "escape+space": _eq_ignore(a, b, "escape", "space"),
-                    },
+                    {"escape": _eq_ignore(a, b, "escape")},
                     {
                         "case": _eq_ignore(a, b, "case"),
                         "case+escape": _eq_ignore(a, b, "case", "escape"),
-                        "case+escape+space": _eq_ignore(
-                            a, b, "case", "escape", "space"
+                        "case+escape+code_space": _eq_ignore(
+                            a, b, "case", "escape", "code_space"
                         ),
                     },
+                    {"han_space": _eq_ignore(a, b, "han_space")},
                     {
-                        "space": _eq_ignore(a, b, "space"),
+                        "code_space": _eq_ignore(a, b, "code_space"),
                         "all": _eq_ignore(
-                            a, b, "lang", "case", "卷", "page", "escape", "space"
+                            a,
+                            b,
+                            *("lang", "case", "卷", "page"),
+                            *("escape", "han_space", "code_space"),
                         ),
                     },
                 ],
@@ -113,7 +125,9 @@ class Difference:
         if names == {"all"}:
             return "all"
         elif names:
-            assert "all" in names
+            assert "all" in names, (
+                f"Inconsistent cause: {names}\n{'\n'.join(self.outputs)}"
+            )
             names.remove("all")
 
             minimal = min(names, key=lambda s: s.count("+"), default="all")
