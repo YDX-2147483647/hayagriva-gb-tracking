@@ -5,24 +5,24 @@ from typing import Literal
 
 import regex  # for matching the Unicode script property
 
-type Ignorance = Literal["lang", "case", "page", "space", "卷", "escape"]
+type Ignorance = Literal["page", "lang", "case", "卷", "escape", "space"]
 
 
 def _ignore(x: str, /, *actions: Ignorance) -> str:
     for action in actions:
         match action:
+            case "page":
+                x = re.sub(r": [-\d]+", "", x)
             case "lang":
                 x = _map_zh_to_bilingual(x)
             case "case":
                 x = x.casefold()
-            case "page":
-                x = re.sub(r": [-\d]+", "", x)
-            case "space":
-                x = x.replace(" ", "")
             case "卷":
                 x = x.replace(": 卷 ", ": ")
             case "escape":
                 x = x.replace(R"\-", "-")
+            case "space":
+                x = x.replace(" ", "")
     return x
 
 
@@ -46,11 +46,6 @@ class Difference:
                 OrderedDict,
                 [
                     {
-                        "lang": _eq_ignore(a, b, "lang"),
-                        "lang+case": _eq_ignore(a, b, "lang", "case"),
-                        "lang+case+space": _eq_ignore(a, b, "lang", "case", "space"),
-                    },
-                    {
                         "page": _eq_ignore(a, b, "page"),
                         "page+space": _eq_ignore(a, b, "page", "space"),
                         "page+escape+space": _eq_ignore(
@@ -58,23 +53,32 @@ class Difference:
                         ),
                     },
                     {
+                        "lang": _eq_ignore(a, b, "lang"),
+                        "lang+case": _eq_ignore(a, b, "lang", "case"),
+                        "lang+case+space": _eq_ignore(a, b, "lang", "case", "space"),
+                    },
+                    {"page+lang": _eq_ignore(a, b, "page", "lang")},
+                    {
                         "卷": _eq_ignore(a, b, "卷"),
                         "卷+space": _eq_ignore(a, b, "卷", "space"),
                         "卷+page+space": _eq_ignore(a, b, "卷", "page", "space"),
                     },
+                    {"卷+page": _eq_ignore(a, b, "卷", "page")},
                     {
                         "escape": _eq_ignore(a, b, "escape"),
                         "escape+space": _eq_ignore(a, b, "escape", "space"),
-                        "escape+case+space": _eq_ignore(
-                            a, b, "escape", "case", "space"
+                    },
+                    {
+                        "case": _eq_ignore(a, b, "case"),
+                        "case+escape": _eq_ignore(a, b, "case", "escape"),
+                        "case+escape+space": _eq_ignore(
+                            a, b, "case", "escape", "space"
                         ),
                     },
-                    {"case": _eq_ignore(a, b, "case")},
-                    {"lang+page": _eq_ignore(a, b, "lang", "page")},
                     {
                         "space": _eq_ignore(a, b, "space"),
                         "all": _eq_ignore(
-                            a, b, "lang", "case", "page", "卷", "escape", "space"
+                            a, b, "page", "lang", "case", "卷", "escape", "space"
                         ),
                     },
                 ],
@@ -92,6 +96,13 @@ class Difference:
             ),
             self.outputs,
         )
+
+    def reason(self) -> Ignorance | Literal["Unknown"] | str:
+        for group in self.eq_ignore:
+            for name, eq in group.items():
+                if eq:
+                    return name
+        return "Unknown"
 
     def eq_emojis(self) -> str:
         flattened: dict[str, bool] = {}
@@ -125,6 +136,10 @@ class Difference:
                         if i >= end:
                             break
                         flattened[name] = eq
+
+        if "all" in flattened and not flattened["all"]:
+            flattened.clear()
+            flattened["all"] = False
 
         return f"equal if ignoring {', '.join(f'{name} {_emoji_bool(eq)}' for name, eq in flattened.items())}."
 

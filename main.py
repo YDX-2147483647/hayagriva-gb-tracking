@@ -1,7 +1,8 @@
 import json
 import xml.etree.ElementTree as ET
-from collections import deque
+from collections import Counter, deque
 from pathlib import Path
+from pprint import pp
 from sys import stderr
 from typing import Any
 
@@ -67,7 +68,14 @@ def compare_outputs(
 {n:03} — {diff.eq_emojis()}
 Expected: {diff.outputs[0]}
 Actual:   {diff.outputs[1]}
+Cause: {diff.reason()}
 """)
+
+    print("Summary of differences:")
+    reasons = Counter(d.reason() for d in diff_list)
+    for reason, count in reasons.most_common():
+        print(f"- {count:3} ≈ {count / len(diff_list):>3.0%} caused by {reason}")
+    print(f"Total differences: {len(diff_list)}")
 
 
 if __name__ == "__main__":
