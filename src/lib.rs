@@ -14,6 +14,25 @@ fn check_csl(csl: &str) -> Option<String> {
         .unwrap_or_else(|e| Some(format!("CSL file malformed: {:?}", e)))
 }
 
+fn warn_hacky_entries(entries: &[csl_json::Item]) {
+    let hacky_entries: Vec<_> = entries
+        .iter()
+        .filter_map(|x| {
+            if x.may_have_hack() {
+                Some(x.id().unwrap_or_default())
+            } else {
+                None
+            }
+        })
+        .collect();
+    if !hacky_entries.is_empty() {
+        eprintln!(
+            "These entries may contain cheater data in their note fields, which will be ignored in most cases: {:?}",
+            hacky_entries
+        );
+    }
+}
+
 /// Format a bibliography of all entries.
 ///
 /// At present, the support for CSL is still quite limited. Therefore, this function returns tab-separated plain text rather than stylized HTML.
@@ -22,9 +41,11 @@ fn reference(entires: &str, style: &str) -> PyResult<String> {
     let style = IndependentStyle::from_xml(style).map_err(|e| {
         pyo3::exceptions::PyValueError::new_err(format!("CSL file malformed: {:?}", e))
     })?;
+
     let entries: Vec<csl_json::Item> = serde_json::from_str(entires).map_err(|e| {
         pyo3::exceptions::PyValueError::new_err(format!("CSL-JSON file malformed: {:?}", e))
     })?;
+    warn_hacky_entries(&entries);
 
     let locales = locales();
 
