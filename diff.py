@@ -6,7 +6,7 @@ from typing import Literal
 import regex  # for matching the Unicode script property
 
 type Ignorance = Literal[
-    "page", "lang", "case", "卷", "escape", "han_space", "code_space"
+    "num", "lang", "case", "卷", "escape", "han_space", "code_space"
 ]
 
 
@@ -19,7 +19,7 @@ def _ignore(x: str, /, *actions: Ignorance) -> str:
         )
 
         match action:
-            case "page":
+            case "num":
                 x = regex.sub(r": [-\d]+(\p{Punctuation})", r"\1", x)
             case "lang":
                 x = _map_zh_to_bilingual(x)
@@ -33,12 +33,11 @@ def _ignore(x: str, /, *actions: Ignorance) -> str:
                 x = regex.sub(r"(?<=\p{script=Han})\s+(?=\P{script=Han})", "", x)
                 x = regex.sub(r"(?<=\P{script=Han})\s+(?=\p{script=Han})", "", x)
                 # These actions assume the existence of spaces
-                forbidden.update({"lang", "page", "卷"})
+                forbidden.update({"lang", "num", "卷"})
             case "code_space":
                 x = re.sub(r"(?<=[\da-zA-Z])\s+(?=[\da-zA-Z])", "", x)
                 # These actions assume the existence of spaces
-                forbidden.update({"lang", "page", "卷"})
-
+                forbidden.update({"lang", "num", "卷"})
         # lang should be the first if it exists
         forbidden.add("lang")
     return x
@@ -64,10 +63,10 @@ class Difference:
                 OrderedDict,
                 [
                     {
-                        "page": _eq_ignore(a, b, "page"),
-                        "page+code_space": _eq_ignore(a, b, "page", "code_space"),
-                        "page+escape+code_space": _eq_ignore(
-                            a, b, "page", "escape", "code_space"
+                        "num": _eq_ignore(a, b, "num"),
+                        "num+code_space": _eq_ignore(a, b, "num", "code_space"),
+                        "num+escape+code_space": _eq_ignore(
+                            a, b, "num", "escape", "code_space"
                         ),
                     },
                     {
@@ -77,15 +76,13 @@ class Difference:
                             a, b, "lang", "case", "han_space"
                         ),
                     },
-                    {"lang+page": _eq_ignore(a, b, "lang", "page")},
+                    {"lang+num": _eq_ignore(a, b, "lang", "num")},
                     {
                         "卷": _eq_ignore(a, b, "卷"),
                         "卷+han_space": _eq_ignore(a, b, "卷", "han_space"),
-                        "卷+page+han_space": _eq_ignore(
-                            a, b, "卷", "page", "han_space"
-                        ),
+                        "卷+num+han_space": _eq_ignore(a, b, "卷", "num", "han_space"),
                     },
-                    {"卷+page": _eq_ignore(a, b, "卷", "page")},
+                    {"卷+num": _eq_ignore(a, b, "卷", "num")},
                     {"escape": _eq_ignore(a, b, "escape")},
                     {
                         "case": _eq_ignore(a, b, "case"),
@@ -100,7 +97,7 @@ class Difference:
                         "all": _eq_ignore(
                             a,
                             b,
-                            *("lang", "case", "卷", "page"),
+                            *("lang", "case", "卷", "num"),
                             *("escape", "han_space", "code_space"),
                         ),
                     },

@@ -1,4 +1,5 @@
 import json
+import re
 import xml.etree.ElementTree as ET
 from collections import Counter, deque
 from pathlib import Path
@@ -38,6 +39,42 @@ def load_entries(file: Path) -> str:
                 f"Trying to normalize a new entry in CSL-JSON: {entry['id']}. Check if it is expected."
             )
             issued["date-parts"] = [[-2161]]  # Add dummy `date-parts`
+
+        # Extract cheater data from the note field
+        note_raw: str | None
+        if (note_raw := entry.get("note")) is not None and (
+            note := note_raw.splitlines()
+        ):
+            note_rest: deque[str] = deque()
+            for line in note:
+                # Parse line
+                match line.split(": ", maxsplit=1):
+                    case [key, value]:
+                        pass
+                    case [value] if re.match(r"^10\.\d{4,9}/[-._;()/:A-Z0-9]+$", value):
+                        key = "DOI"
+                    case _:
+                        note_rest.append(line)
+                        continue
+
+                # Process line
+                if (
+                    key
+                    and value
+                    and key not in entry
+                    and key not in {"tex.entrytype", "issue"}
+                ):
+                    assert key in {"DOI", "page", "editor", "container-title"}, (
+                        f"Trying to extract a new cheater data from the note field in CSL-JSON: “{line}” of {entry['id']}. Check if it is expected."
+                    )
+                    entry[key] = value
+                else:
+                    note_rest.append(line)
+
+            if note_rest:
+                entry["note"] = "\n".join(note_rest)
+            else:
+                del entry["note"]
 
     # Sort entries to be consistent with zotero-chinese.
     # https://github.com/zotero-chinese/styles/blob/ce0786d7/lib/data/index.ts#L103
