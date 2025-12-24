@@ -9,7 +9,13 @@ type Ignorance = Literal["page", "lang", "case", "卷", "escape", "space"]
 
 
 def _ignore(x: str, /, *actions: Ignorance) -> str:
+    forbidden: set[Ignorance] = set()
+
     for action in actions:
+        assert action not in forbidden, (
+            f"{action} is forbidden due to previous actions."
+        )
+
         match action:
             case "page":
                 x = re.sub(r": [-\d]+", "", x)
@@ -23,6 +29,11 @@ def _ignore(x: str, /, *actions: Ignorance) -> str:
                 x = x.replace(R"\-", "-")
             case "space":
                 x = x.replace(" ", "")
+                # These actions assume the existence of spaces
+                forbidden.update({"lang", "page", "卷"})
+
+        # lang should be the first if it exists
+        forbidden.add("lang")
     return x
 
 
@@ -57,7 +68,7 @@ class Difference:
                         "lang+case": _eq_ignore(a, b, "lang", "case"),
                         "lang+case+space": _eq_ignore(a, b, "lang", "case", "space"),
                     },
-                    {"page+lang": _eq_ignore(a, b, "page", "lang")},
+                    {"lang+page": _eq_ignore(a, b, "lang", "page")},
                     {
                         "卷": _eq_ignore(a, b, "卷"),
                         "卷+space": _eq_ignore(a, b, "卷", "space"),
@@ -78,7 +89,7 @@ class Difference:
                     {
                         "space": _eq_ignore(a, b, "space"),
                         "all": _eq_ignore(
-                            a, b, "page", "lang", "case", "卷", "escape", "space"
+                            a, b, "lang", "case", "卷", "page", "escape", "space"
                         ),
                     },
                 ],
@@ -97,12 +108,21 @@ class Difference:
             self.outputs,
         )
 
-    def reason(self) -> Ignorance | Literal["Unknown"] | str:
-        for group in self.eq_ignore:
-            for name, eq in group.items():
-                if eq:
-                    return name
-        return "Unknown"
+    def cause(self) -> Ignorance | Literal["Unknown"] | str:
+        names = {name for group in self.eq_ignore for name, eq in group.items() if eq}
+        if names == {"all"}:
+            return "all"
+        elif names:
+            assert "all" in names
+            names.remove("all")
+
+            minimal = min(names, key=lambda s: s.count("+"), default="all")
+            assert sum(n.count("+") == minimal.count("+") for n in names) == 1, (
+                f"The cause cannot be determined: {names}"
+            )
+            return minimal
+        else:
+            return "Unknown"
 
     def eq_emojis(self) -> str:
         flattened: dict[str, bool] = {}
