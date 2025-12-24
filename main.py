@@ -61,10 +61,20 @@ def load_entries(file: Path) -> str:
                 if (
                     key
                     and value
-                    and key not in entry
+                    and (
+                        key not in entry
+                        # These are special types used by GB-T-7714—2015（顺序编码，双语）.csl.
+                        or (key == "type" and value in {"collection", "periodical"})
+                    )
                     and key not in {"tex.entrytype", "issue"}
                 ):
-                    assert key in {"DOI", "page", "editor", "container-title"}, (
+                    assert key in {
+                        "DOI",
+                        "page",
+                        "editor",
+                        "container-title",
+                        "type",
+                    }, (
                         f"Trying to extract a new cheater data from the note field in CSL-JSON: “{line}” of {entry['id']}. Check if it is expected."
                     )
                     entry[key] = value
