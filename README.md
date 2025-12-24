@@ -60,6 +60,5 @@ uv tool install maturin
 uv venv
 maturin develop --release
 
-cd tracking
-uv run main.py
+uv run tracking/main.py
 ```

@@ -206,7 +206,7 @@ def _map_zh_to_bilingual(x: str, /) -> str:
         + m.group(2)
         + (
             "th"
-            if len((num := m.group(2))) == 2 and num[0] == "1"
+            if len(num := m.group(2)) == 2 and num[0] == "1"
             else {"1": "st", "2": "nd", "3": "rd"}.get(num[-1], "th")
         )
         + " ed",

@@ -1,97 +1,13 @@
-import json
-import re
-import xml.etree.ElementTree as ET
 from collections import Counter, deque
 from pathlib import Path
 from sys import stderr
-from typing import Any
 
 from diff import Difference
+from fixture import FILE, ensure_fixture
+from load_entries import load_entries
+from util import CACHE_DIR
+
 from hayagriva import check_csl, reference
-
-
-def extract_expected_output(file: Path) -> str:
-    """Extract and save the plain-text expected output from the HTML file.
-
-    At present, the support for CSL of typst/hayagriva is still quite limited. Therefore, we strip HTML styles for comparison.
-    """
-    expected_output = "".join(
-        "\t".join("".join(col.itertext()) for col in row) + "\n"
-        for row in (ET.parse(file).getroot().findall(".//div[@class='csl-entry']"))
-    )
-    file.with_suffix(".txt").write_text(expected_output, encoding="utf-8")
-    return expected_output
-
-
-def load_entries(file: Path) -> str:
-    """Load and normalize CSL-JSON entries from file."""
-    entries: list[dict[str, Any]] = json.loads(file.read_text(encoding="utf-8"))
-
-    # Make entries acceptable by citationberg.
-    for entry in entries:
-        # citationberg requires DateValue has either `raw` or `date-parts`.
-        # https://docs.rs/crate/citationberg/0.6.1/source/src/json.rs#161-173
-        issued: dict[str, str | list] | None
-        if (issued := entry.get("issued")) is not None and (
-            set(issued.keys()) == {"literal"}
-        ):
-            assert entry["id"] in {"gbt7714.A.07:07", "gbt7714.A.07:08"}, (
-                f"Trying to normalize a new entry in CSL-JSON: {entry['id']}. Check if it is expected."
-            )
-            issued["date-parts"] = [[-2161]]  # Add dummy `date-parts` (`2162公元前`)
-
-        # Extract cheater data from the note field
-        note_raw: str | None
-        if (note_raw := entry.get("note")) is not None and (
-            note := note_raw.splitlines()
-        ):
-            note_rest: deque[str] = deque()
-            for line in note:
-                # Parse line
-                match line.split(": ", maxsplit=1):
-                    case [key, value]:
-                        pass
-                    case [value] if re.match(r"^10\.\d{4,9}/[-._;()/:A-Z0-9]+$", value):
-                        key = "DOI"
-                    case _:
-                        note_rest.append(line)
-                        continue
-
-                # Process line
-                if (
-                    key
-                    and value
-                    and (
-                        key not in entry
-                        # These are special types used by GB-T-7714—2015（顺序编码，双语）.csl.
-                        or (key == "type" and value in {"collection", "periodical"})
-                    )
-                    and key not in {"tex.entrytype"}
-                ):
-                    assert key in {
-                        "DOI",
-                        "page",
-                        "editor",
-                        "container-title",
-                        "type",
-                        "issue",
-                    }, (
-                        f"Trying to extract a new cheater data from the note field in CSL-JSON: “{line}” of {entry['id']}. Check if it is expected."
-                    )
-                    entry[key] = value
-                else:
-                    note_rest.append(line)
-
-            if note_rest:
-                entry["note"] = "\n".join(note_rest)
-            else:
-                del entry["note"]
-
-    # Sort entries to be consistent with zotero-chinese.
-    # https://github.com/zotero-chinese/styles/blob/ce0786d7/lib/data/index.ts#L103
-    entries.sort(key=lambda e: e["id"])
-
-    return json.dumps(entries, ensure_ascii=False)
 
 
 def compare_outputs(
@@ -128,21 +44,23 @@ Cause: {diff.cause()}
 
 
 if __name__ == "__main__":
-    expected_output = extract_expected_output(Path("expected-output.html"))
+    ensure_fixture()
 
-    csl = Path("GB-T-7714—2015（顺序编码，双语）.csl").read_text(encoding="utf-8")
+    expected_output = FILE.expected_output.read_text(encoding="utf-8")
+    csl = FILE.csl.read_text(encoding="utf-8")
+    entries = load_entries(FILE.entries)
+
     assert check_csl(csl) is None
 
-    entries = load_entries(Path("gbt7714-data.json"))
-
     actual_output = reference(entries, csl)
-    Path("actual-output.txt").write_text(actual_output, encoding="utf-8")
+    actual_output_file = CACHE_DIR / "actual-output.txt"
+    actual_output_file.write_text(actual_output, encoding="utf-8")
 
     compare_outputs(expected_output, actual_output)
     print(
-        """
+        f"""
 You may also use VS Code to compare the outputs:
-    code --diff expected-output.txt actual-output.txt
+    code --diff {FILE.expected_output.relative_to(Path.cwd())} {actual_output_file.relative_to(Path.cwd())}
 """,
         file=stderr,
     )

@@ -4,5 +4,9 @@ build-backend = "maturin"
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28.1",
     "regex>=2025.11.3",
 ]
+
+[tool.ruff.lint]
+extend-select = ["U", "TYP", "F", "I"]
