@@ -6,5 +6,5 @@ uv tool install maturin
 uv venv
 maturin develop --release
 
-uv run a.py
+uv run main.py
 ```
