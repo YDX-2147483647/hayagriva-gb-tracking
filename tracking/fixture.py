@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 from collections.abc import Generator
 from dataclasses import dataclass
+from pathlib import Path
 from sys import stderr
 
 import httpx
@@ -23,8 +24,19 @@ class _File:
 FILE = _File()
 
 
+_download_message: str | None = (
+    f"Hint: You can edit the constants in {Path(__file__).relative_to(Path.cwd())} if you meet network issues."
+)
+
+
 def _download(url: str) -> str:
     print(f"Downloading from {url} …", file=stderr)
+
+    global _download_message
+    if _download_message is not None:
+        print(_download_message, file=stderr)
+        _download_message = None
+
     return httpx.get(url, follow_redirects=True).text
 
 
