@@ -1,8 +1,10 @@
 import json
 import re
 import xml.etree.ElementTree as ET
+from collections import deque
 from dataclasses import dataclass
 from pathlib import Path
+from sys import stderr
 from typing import Any
 
 import regex  # for matching the Unicode script property
@@ -53,6 +55,7 @@ class Difference:
     eq_ignore_case: bool
     eq_ignore_space: bool
     eq_ignore_lang: bool
+    eq_ignore_all: bool
 
     def __init__(self, a: str, b: str, /) -> None:
         assert a != b, f"No difference between outputs: {a} == {b}"
@@ -62,6 +65,32 @@ class Difference:
         self.eq_ignore_space = a.replace(" ", "") == b.replace(" ", "")
         self.eq_ignore_lang = self._map_zh_to_bilingual(a) == self._map_zh_to_bilingual(
             b
+        )
+
+        self.eq_ignore_all = (
+            self._map_zh_to_bilingual(a).replace(" ", "").casefold()
+        ) == self._map_zh_to_bilingual(b).replace(" ", "").casefold()
+
+    def as_key(self) -> tuple[int | tuple[str, ...], ...]:
+        return (
+            1 - self.eq_ignore_all,
+            1 - self.eq_ignore_lang,
+            1 - self.eq_ignore_case,
+            1 - self.eq_ignore_space,
+            (
+                int(n.group(1))
+                if (n := re.match(r"^\[(\d+)\]", self.outputs[0])) is not None
+                else -1
+            ),
+            self.outputs,
+        )
+
+    def eq_emojis(self) -> str:
+        return (
+            f"equal if ignoring all {emoji_bool(self.eq_ignore_all)} or only"
+            f" lang {emoji_bool(self.eq_ignore_lang)},"
+            f" case {emoji_bool(self.eq_ignore_case)},"
+            f" space {emoji_bool(self.eq_ignore_space)}."
         )
 
     @classmethod
@@ -109,8 +138,8 @@ class Difference:
         x = re.sub(
             r"等.",
             lambda m: "et al."
-            + (" " if m.group(0)[-1] not in ".,;:[]/\\<>?() \"'" else "")
-            + (m.group(0)[-1] if m.group(0)[-1] != "." else ""),
+            + (" " if (last := m.group(0)[-1]) not in ".,;:[]/\\<>?() \"'" else "")
+            + (last if last != "." else ""),
             x,
         )
 
@@ -134,17 +163,22 @@ def compare_outputs(
     actual_output: str,
 ) -> None:
     """Compare the expected and actual outputs, and print the differences."""
-    n = 0
+
+    diff_deque: deque[Difference] = deque()
     for expected, actual in zip(
         expected_output.splitlines(), actual_output.splitlines()
     ):
         if expected != actual:
-            n += 1
-            diff = Difference(expected, actual)
-            print(f"""
-{n:03} — eq ignore case: {emoji_bool(diff.eq_ignore_case)}, eq ignore space: {emoji_bool(diff.eq_ignore_space)}, eq ignore lang: {emoji_bool(diff.eq_ignore_lang)}
-  Expected: {expected}
-  Actual:   {actual}
+            diff_deque.append(Difference(expected, actual))
+
+    diff_list = list(diff_deque)
+    diff_list.sort(key=Difference.as_key)
+
+    for n, diff in enumerate(diff_list, start=1):
+        print(f"""
+{n:03} — {diff.eq_emojis()}
+Expected: {diff.outputs[0]}
+Actual:   {diff.outputs[1]}
 """)
 
 
@@ -160,7 +194,10 @@ if __name__ == "__main__":
     Path("actual-output.txt").write_text(actual_output, encoding="utf-8")
 
     compare_outputs(expected_output, actual_output)
-    print("""
+    print(
+        """
 You may also use VS Code to compare the outputs:
     code --diff expected-output.txt actual-output.txt
-""")
+""",
+        file=stderr,
+    )
