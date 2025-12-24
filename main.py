@@ -38,7 +38,7 @@ def load_entries(file: Path) -> str:
             assert entry["id"] in {"gbt7714.A.07:07", "gbt7714.A.07:08"}, (
                 f"Trying to normalize a new entry in CSL-JSON: {entry['id']}. Check if it is expected."
             )
-            issued["date-parts"] = [[-2161]]  # Add dummy `date-parts`
+            issued["date-parts"] = [[-2161]]  # Add dummy `date-parts` (`2162公元前`)
 
         # Extract cheater data from the note field
         note_raw: str | None
@@ -66,7 +66,7 @@ def load_entries(file: Path) -> str:
                         # These are special types used by GB-T-7714—2015（顺序编码，双语）.csl.
                         or (key == "type" and value in {"collection", "periodical"})
                     )
-                    and key not in {"tex.entrytype", "issue"}
+                    and key not in {"tex.entrytype"}
                 ):
                     assert key in {
                         "DOI",
@@ -74,6 +74,7 @@ def load_entries(file: Path) -> str:
                         "editor",
                         "container-title",
                         "type",
+                        "issue",
                     }, (
                         f"Trying to extract a new cheater data from the note field in CSL-JSON: “{line}” of {entry['id']}. Check if it is expected."
                     )

@@ -19,7 +19,10 @@ fn warn_hacky_entries(entries: &[csl_json::Item]) {
         .iter()
         .filter_map(|x| {
             if x.may_have_hack() {
-                Some(x.id().unwrap_or_default())
+                Some((
+                    x.id().unwrap_or_default(),
+                    x.0.get("note")?.to_str().unwrap_or_default(),
+                ))
             } else {
                 None
             }
@@ -27,7 +30,7 @@ fn warn_hacky_entries(entries: &[csl_json::Item]) {
         .collect();
     if !hacky_entries.is_empty() {
         eprintln!(
-            "These entries may contain cheater data in their note fields, which will be ignored in most cases: {:?}",
+            "These entries may contain cheater data in their note fields, which will be ignored in most cases: {:#?}",
             hacky_entries
         );
     }
