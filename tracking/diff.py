@@ -6,7 +6,7 @@ from typing import Literal
 import regex  # for matching the Unicode script property
 
 type Ignorance = Literal[
-    "num", "lang", "case", "卷", "escape", "han_space", "code_space"
+    "type_dot", "num", "lang", "case", "卷", "escape", "han_space", "code_space"
 ]
 
 
@@ -38,6 +38,10 @@ def _ignore(x: str, /, *actions: Ignorance) -> str:
                 x = re.sub(r"(?<=[\da-zA-Z])\s+(?=[\da-zA-Z])", "", x)
                 # These actions assume the existence of spaces
                 forbidden.update({"lang", "num", "卷"})
+            case "type_dot":
+                # This is redundant for hayagriva >= v0.8.1, only kept for generating legacy data.
+                # Ignore case because of the `case` ignorance.
+                x = re.sub(r"(\[([A-Za-z]|EB|eb)(/OL|/ol)?\])\.\s*", r"\1", x)
         # lang should be the first if it exists
         forbidden.add("lang")
     return x
@@ -92,6 +96,7 @@ class Difference:
                         ),
                     },
                     {"han_space": _eq_ignore(a, b, "han_space")},
+                    {"type_dot": _eq_ignore(a, b, "type_dot")},
                     {
                         "code_space": _eq_ignore(a, b, "code_space"),
                         "all": _eq_ignore(
@@ -99,6 +104,7 @@ class Difference:
                             b,
                             *("lang", "case", "卷", "num"),
                             *("escape", "han_space", "code_space"),
+                            "type_dot",
                         ),
                     },
                 ],
