@@ -142,7 +142,7 @@ jobs:
           path: dist
       - run: uv pip install dist/hayagriva_py-*-cp310-abi3-*.whl
 
-      - run: uv run tracking/main.py
+      - run: uv run -m tracking --show-details
       - uses: actions/upload-artifact@v6
         with:
           name: tracking-output

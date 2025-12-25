@@ -4,7 +4,7 @@ from typing import Literal
 
 import regex  # for matching the Unicode script property
 
-from min_sub import minimize_seq
+from .min_sub import minimize_seq
 
 type Ignorance = Literal[
     "num", "lang", "case", "卷", "escape", "han_space", "code_space", "punct"

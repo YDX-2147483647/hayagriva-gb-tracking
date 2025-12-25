@@ -6,7 +6,7 @@ from sys import stderr
 
 import httpx
 
-from util import CACHE_DIR
+from .util import CACHE_DIR
 
 ZOTERO_CHINESE_REPO = "https://github.com/zotero-chinese/styles/raw/ce0786d7"
 CSL_SANITIZER_WEBSITE = "https://typst-doc-cn.github.io/csl-sanitizer"

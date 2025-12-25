@@ -4,6 +4,7 @@ build-backend = "maturin"
 
 [dependency-groups]
 dev = [
+    "click>=8.3.1",
     "httpx>=0.28.1",
     "regex>=2025.11.3",
 ]
