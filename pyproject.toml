@@ -8,5 +8,8 @@ dev = [
     "regex>=2025.11.3",
 ]
 
+[tool.ruff]
+src = ["tracking"]
+
 [tool.ruff.lint]
 extend-select = ["U", "TYP", "F", "I"]

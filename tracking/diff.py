@@ -1,16 +1,29 @@
 import re
-from collections import OrderedDict
 from dataclasses import dataclass
 from typing import Literal
 
 import regex  # for matching the Unicode script property
 
+from min_sub import minimize_seq
+
 type Ignorance = Literal[
-    "type_dot", "num", "lang", "case", "卷", "escape", "han_space", "code_space"
+    "num", "lang", "case", "卷", "escape", "han_space", "code_space", "punct"
 ]
+
+_IGNORANCE_ORDER: tuple[Ignorance, ...] = (
+    *("lang", "case", "卷", "num"),
+    *("escape", "han_space", "code_space"),
+    # The following ignorances are redundant for hayagriva >= v0.8.1, kept only for generating legacy data.
+    *("punct",),
+)
+"""The order of ignorances.
+
+It makes sure that any subsequence of this list is safe for the `_ignore` function to apply in order.
+"""
 
 
 def _ignore(x: str, /, *actions: Ignorance) -> str:
+    """Apply actions in order."""
     forbidden: set[Ignorance] = set()
 
     for action in actions:
@@ -38,10 +51,9 @@ def _ignore(x: str, /, *actions: Ignorance) -> str:
                 x = re.sub(r"(?<=[\da-zA-Z])\s+(?=[\da-zA-Z])", "", x)
                 # These actions assume the existence of spaces
                 forbidden.update({"lang", "num", "卷"})
-            case "type_dot":
-                # This is redundant for hayagriva >= v0.8.1, only kept for generating legacy data.
-                # Ignore case because of the `case` ignorance.
-                x = re.sub(r"(\[([A-Za-z]|EB|eb)(/OL|/ol)?\])\.\s*", r"\1", x)
+            case "punct":
+                # We don't use `\p{Punctuation}\s*` here, because it's too general.
+                x = regex.sub(r"((?<=\])\.|:)\s*", "", x)
         # lang should be the first if it exists
         forbidden.add("lang")
     return x
@@ -54,66 +66,34 @@ def _eq_ignore(a: str, b: str, /, *actions: Ignorance) -> bool:
 @dataclass
 class Difference:
     outputs: tuple[str, str]
-
-    eq_ignore: list[OrderedDict[str, bool]]
-    """A grouped ordered dict of equalities."""
+    eq_ignore_min: tuple[Ignorance, ...] | None
+    """The strongest equality between the outputs.
+    Or equivalently, the minimal list of ignorances that makes them equal (weakly)."""
 
     def __init__(self, a: str, b: str, /) -> None:
         assert a != b, f"No difference between outputs: {a} == {b}"
         self.outputs = (a, b)
 
-        self.eq_ignore = list(
-            map(
-                OrderedDict,
-                [
-                    {
-                        "num": _eq_ignore(a, b, "num"),
-                        "num+code_space": _eq_ignore(a, b, "num", "code_space"),
-                        "num+escape+code_space": _eq_ignore(
-                            a, b, "num", "escape", "code_space"
-                        ),
-                    },
-                    {
-                        "lang": _eq_ignore(a, b, "lang"),
-                        "lang+case": _eq_ignore(a, b, "lang", "case"),
-                        "lang+case+han_space": _eq_ignore(
-                            a, b, "lang", "case", "han_space"
-                        ),
-                    },
-                    {"lang+num": _eq_ignore(a, b, "lang", "num")},
-                    {
-                        "卷": _eq_ignore(a, b, "卷"),
-                        "卷+han_space": _eq_ignore(a, b, "卷", "han_space"),
-                        "卷+num+han_space": _eq_ignore(a, b, "卷", "num", "han_space"),
-                    },
-                    {"卷+num": _eq_ignore(a, b, "卷", "num")},
-                    {"escape": _eq_ignore(a, b, "escape")},
-                    {
-                        "case": _eq_ignore(a, b, "case"),
-                        "case+escape": _eq_ignore(a, b, "case", "escape"),
-                        "case+escape+code_space": _eq_ignore(
-                            a, b, "case", "escape", "code_space"
-                        ),
-                    },
-                    {"han_space": _eq_ignore(a, b, "han_space")},
-                    {"type_dot": _eq_ignore(a, b, "type_dot")},
-                    {
-                        "code_space": _eq_ignore(a, b, "code_space"),
-                        "all": _eq_ignore(
-                            a,
-                            b,
-                            *("lang", "case", "卷", "num"),
-                            *("escape", "han_space", "code_space"),
-                            "type_dot",
-                        ),
-                    },
-                ],
-            )
-        )
+        # Determine the cause of the difference
 
-    def as_key(self) -> tuple[list[list[int]] | int | tuple[str, ...], ...]:
+        def f(actions: tuple[Ignorance, ...]) -> bool:
+            return _eq_ignore(a, b, *actions)
+
+        self.eq_ignore_min = minimize_seq(f, _IGNORANCE_ORDER)
+
+    def cause(self) -> Literal["All", "Unknown"] | str:
+        if self.eq_ignore_min == _IGNORANCE_ORDER:
+            return "All"
+        elif self.eq_ignore_min is None:
+            return "Unknown"
+        else:
+            return "+".join(self.eq_ignore_min)
+
+    def as_key(self) -> tuple[str | int | tuple[str | int, ...], ...]:
         return (
-            [[1 - eq for eq in group.values()] for group in self.eq_ignore],
+            (0, *(i not in self.eq_ignore_min for i in _IGNORANCE_ORDER))
+            if self.eq_ignore_min is not None
+            else (1,),
             (
                 # The citation number
                 int(n.group(1))
@@ -122,67 +102,6 @@ class Difference:
             ),
             self.outputs,
         )
-
-    def cause(self) -> Ignorance | Literal["Unknown"] | str:
-        names = {name for group in self.eq_ignore for name, eq in group.items() if eq}
-        if names == {"all"}:
-            return "all"
-        elif names:
-            assert "all" in names, (
-                f"Inconsistent cause: {names}\n{'\n'.join(self.outputs)}"
-            )
-            names.remove("all")
-
-            minimal = min(names, key=lambda s: s.count("+"), default="all")
-            assert sum(n.count("+") == minimal.count("+") for n in names) == 1, (
-                f"The cause cannot be determined: {names}"
-            )
-            return minimal
-        else:
-            return "Unknown"
-
-    def eq_emojis(self) -> str:
-        flattened: dict[str, bool] = {}
-        for group in self.eq_ignore:
-            match list(set(group.values())):
-                case [True]:
-                    flattened[list(group.keys())[0]] = True
-                case [False]:
-                    flattened[list(group.keys())[-1]] = False
-                case _:
-                    # Push an interval in the group
-                    # start: the end of the first continuous False sequence
-                    # end: the start of the last continuous True sequence
-                    start = None
-                    for i, eq in enumerate(group.values()):
-                        if eq:
-                            start = i - 1  # start == -1 is okay
-                            break
-                    assert start is not None
-                    end = None
-                    for i_rev, eq in enumerate(reversed(group.values())):
-                        if not eq:
-                            i = len(group) - i_rev - 1
-                            end = i + 2
-                            break
-                    assert end is not None
-
-                    for i, (name, eq) in enumerate(group.items()):
-                        if i < start:
-                            continue
-                        if i >= end:
-                            break
-                        flattened[name] = eq
-
-        if "all" in flattened and not flattened["all"]:
-            flattened.clear()
-            flattened["all"] = False
-
-        return f"equal if ignoring {', '.join(f'{name} {_emoji_bool(eq)}' for name, eq in flattened.items())}."
-
-
-def _emoji_bool(x: bool) -> str:
-    return "✅" if x else "❌"
 
 
 def _map_zh_to_bilingual(x: str, /) -> str:

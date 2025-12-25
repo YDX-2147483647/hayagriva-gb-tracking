@@ -2,12 +2,12 @@ from collections import Counter, deque
 from pathlib import Path
 from sys import stderr
 
+from hayagriva import check_csl, reference
+
 from diff import Difference
 from fixture import FILE, ensure_fixture
 from load_entries import load_entries
 from util import CACHE_DIR
-
-from hayagriva import check_csl, reference
 
 
 def compare_outputs(
@@ -28,10 +28,9 @@ def compare_outputs(
 
     for n, diff in enumerate(diff_list, start=1):
         print(f"""
-{n:03} — {diff.eq_emojis()}
+{n:03} — cause: {diff.cause()}
 Expected: {diff.outputs[0]}
 Actual:   {diff.outputs[1]}
-Cause: {diff.cause()}
 """)
 
     print("Summary of differences:")
