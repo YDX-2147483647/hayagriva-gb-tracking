@@ -104,7 +104,7 @@ checksum = "841d1cc9bed7f9236f321df977030373f4a4163ae1a7dbfe1a51a2c1a51d9100"
 [[package]]
 name = "hayagriva"
 version = "0.9.1"
-source = "git+https://github.com/typst/hayagriva?branch=main#a2bfce8f07962ba0af972c23050e8259c30c7212"
+source = "git+https://github.com/typst/hayagriva?branch=main#a137441413a5907c15ced44d1502dfb9fa1a3014"
 dependencies = [
  "ciborium",
  "citationberg",

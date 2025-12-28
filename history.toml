@@ -1,8 +1,370 @@
+# To update:
+#   cargo add --git https://github.com/typst/hayagriva [--branch main] / [--tag vX.Y.Z]
+#   uv run -m tracking --update-history history.toml
 version = 1
+
+[[record]]
+entries_rev = "zotero-chinese/styles#ce0786d7"
+csl_updated_at = "2025-01-08T17:10:39+08:00"
+hayagriva_source = "git+https://github.com/typst/hayagriva?tag=v0.4.0#8dce242de6366156eee2ea113584236883af6e66"
+
+[record.output]
+n_entries = 128
+n_diff = 128
+
+[record.output.diff_counts]
+punct = 64
+case = 4
+code_space = 4
+"卷" = 3
+han_space = 3
+lang = 2
+escape = 2
+num = 2
+Unknown = 64
+
+[record.output.cause_counts]
+punct = 49
+"case+punct" = 3
+"卷+han_space+punct" = 3
+"code_space+punct" = 3
+"lang+punct" = 2
+"num+punct" = 2
+"case+escape+code_space+punct" = 1
+"escape+punct" = 1
+Unknown = 64
+[[record]]
+entries_rev = "zotero-chinese/styles#ce0786d7"
+csl_updated_at = "2025-01-08T17:10:39+08:00"
+hayagriva_source = "git+https://github.com/typst/hayagriva?tag=v0.5.0#b5a3d1a6cd7793de100eef2cb641efcc7cb8acb2"
+
+[record.output]
+n_entries = 128
+n_diff = 128
+
+[record.output.diff_counts]
+punct = 89
+code_space = 6
+lang = 5
+case = 5
+escape = 3
+"卷" = 3
+han_space = 3
+num = 2
+Unknown = 39
+
+[record.output.cause_counts]
+punct = 67
+"lang+punct" = 5
+"code_space+punct" = 5
+"case+punct" = 4
+"卷+han_space+punct" = 3
+"num+punct" = 2
+"escape+punct" = 2
+"case+escape+code_space+punct" = 1
+Unknown = 39
+[[record]]
+entries_rev = "zotero-chinese/styles#ce0786d7"
+csl_updated_at = "2025-01-08T17:10:39+08:00"
+hayagriva_source = "git+https://github.com/typst/hayagriva?tag=v0.5.1#3e92ac83837914a0f1feeff63e50ed2faa1577a6"
+
+[record.output]
+n_entries = 128
+n_diff = 128
+
+[record.output.diff_counts]
+punct = 89
+code_space = 6
+lang = 5
+case = 5
+escape = 3
+"卷" = 3
+han_space = 3
+num = 2
+Unknown = 39
+
+[record.output.cause_counts]
+punct = 67
+"lang+punct" = 5
+"code_space+punct" = 5
+"case+punct" = 4
+"卷+han_space+punct" = 3
+"num+punct" = 2
+"escape+punct" = 2
+"case+escape+code_space+punct" = 1
+Unknown = 39
+[[record]]
+entries_rev = "zotero-chinese/styles#ce0786d7"
+csl_updated_at = "2025-01-08T17:10:39+08:00"
+hayagriva_source = "git+https://github.com/typst/hayagriva?tag=v0.5.2#3315538723694931aa3695ecf6b0f3ec56481d9e"
+
+[record.output]
+n_entries = 128
+n_diff = 128
+
+[record.output.diff_counts]
+punct = 87
+num = 22
+code_space = 6
+lang = 5
+case = 5
+escape = 3
+"卷" = 3
+han_space = 3
+Unknown = 41
+
+[record.output.cause_counts]
+punct = 50
+"num+punct" = 17
+"lang+punct" = 5
+"case+punct" = 4
+"卷+num+han_space+punct" = 3
+"code_space+punct" = 3
+"num+code_space+punct" = 2
+"escape+punct" = 2
+"case+escape+code_space+punct" = 1
+Unknown = 41
+[[record]]
+entries_rev = "zotero-chinese/styles#ce0786d7"
+csl_updated_at = "2025-01-08T17:10:39+08:00"
+hayagriva_source = "git+https://github.com/typst/hayagriva?tag=v0.5.3#f2cc0bb10b4e65361f979d5975305f82ecb83cab"
+
+[record.output]
+n_entries = 128
+n_diff = 128
+
+[record.output.diff_counts]
+punct = 87
+num = 22
+code_space = 6
+lang = 5
+case = 5
+escape = 3
+"卷" = 3
+han_space = 3
+Unknown = 41
+
+[record.output.cause_counts]
+punct = 50
+"num+punct" = 17
+"lang+punct" = 5
+"case+punct" = 4
+"卷+num+han_space+punct" = 3
+"code_space+punct" = 3
+"num+code_space+punct" = 2
+"escape+punct" = 2
+"case+escape+code_space+punct" = 1
+Unknown = 41
+[[record]]
+entries_rev = "zotero-chinese/styles#ce0786d7"
+csl_updated_at = "2025-01-08T17:10:39+08:00"
+hayagriva_source = "git+https://github.com/typst/hayagriva?tag=v0.6.0#2bb2ab02e51f2fa53f57ccafffec34ff30ad143e"
+
+[record.output]
+n_entries = 128
+n_diff = 128
+
+[record.output.diff_counts]
+punct = 90
+code_space = 6
+lang = 5
+case = 5
+escape = 3
+"卷" = 3
+han_space = 3
+num = 2
+Unknown = 38
+
+[record.output.cause_counts]
+punct = 68
+"lang+punct" = 5
+"code_space+punct" = 5
+"case+punct" = 4
+"卷+han_space+punct" = 3
+"num+punct" = 2
+"escape+punct" = 2
+"case+escape+code_space+punct" = 1
+Unknown = 38
+[[record]]
+entries_rev = "zotero-chinese/styles#ce0786d7"
+csl_updated_at = "2025-01-08T17:10:39+08:00"
+hayagriva_source = "git+https://github.com/typst/hayagriva?tag=v0.7.0#a1a27dc6ac58ddde3b4deed3ab441619d9e2b25a"
+
+[record.output]
+n_entries = 128
+n_diff = 128
+
+[record.output.diff_counts]
+punct = 90
+code_space = 6
+lang = 5
+case = 5
+escape = 3
+"卷" = 3
+han_space = 3
+num = 2
+Unknown = 38
+
+[record.output.cause_counts]
+punct = 68
+"lang+punct" = 5
+"code_space+punct" = 5
+"case+punct" = 4
+"卷+han_space+punct" = 3
+"num+punct" = 2
+"escape+punct" = 2
+"case+escape+code_space+punct" = 1
+Unknown = 38
+[[record]]
+entries_rev = "zotero-chinese/styles#ce0786d7"
+csl_updated_at = "2025-01-08T17:10:39+08:00"
+hayagriva_source = "git+https://github.com/typst/hayagriva?tag=v0.8.0#77b1f547252c951ee7c384799d6f332c59708005"
+
+[record.output]
+n_entries = 128
+n_diff = 128
+
+[record.output.diff_counts]
+punct = 90
+code_space = 6
+lang = 5
+case = 5
+escape = 3
+"卷" = 3
+han_space = 3
+num = 2
+Unknown = 38
+
+[record.output.cause_counts]
+punct = 68
+"lang+punct" = 5
+"code_space+punct" = 5
+"case+punct" = 4
+"卷+han_space+punct" = 3
+"num+punct" = 2
+"escape+punct" = 2
+"case+escape+code_space+punct" = 1
+Unknown = 38
+[[record]]
+entries_rev = "zotero-chinese/styles#ce0786d7"
+csl_updated_at = "2025-01-08T17:10:39+08:00"
+hayagriva_source = "git+https://github.com/typst/hayagriva?tag=v0.8.1#edec836b302687316f9e5461e2bb133a326a6365"
+
+[record.output]
+n_entries = 128
+n_diff = 40
+
+[record.output.diff_counts]
+lang = 10
+case = 8
+"卷" = 7
+han_space = 7
+code_space = 6
+escape = 3
+num = 3
+Unknown = 7
+
+[record.output.cause_counts]
+lang = 8
+"卷+han_space" = 7
+case = 5
+code_space = 5
+num = 3
+"lang+case" = 2
+escape = 2
+"case+escape+code_space" = 1
+Unknown = 7
+[[record]]
+entries_rev = "zotero-chinese/styles#ce0786d7"
+csl_updated_at = "2025-01-08T17:10:39+08:00"
+hayagriva_source = "git+https://github.com/typst/hayagriva?tag=v0.9.0#daf541f36bf73adce4665c15947c399271197e14"
+
+[record.output]
+n_entries = 128
+n_diff = 40
+
+[record.output.diff_counts]
+lang = 10
+case = 8
+"卷" = 7
+han_space = 7
+code_space = 6
+escape = 3
+num = 3
+Unknown = 7
+
+[record.output.cause_counts]
+lang = 8
+"卷+han_space" = 7
+case = 5
+code_space = 5
+num = 3
+"lang+case" = 2
+escape = 2
+"case+escape+code_space" = 1
+Unknown = 7
+[[record]]
+entries_rev = "zotero-chinese/styles#ce0786d7"
+csl_updated_at = "2025-01-08T17:10:39+08:00"
+hayagriva_source = "git+https://github.com/typst/hayagriva?tag=v0.9.1#799cfdcc5811894f62949a63b155878e2f30b879"
+
+[record.output]
+n_entries = 128
+n_diff = 40
+
+[record.output.diff_counts]
+lang = 10
+case = 8
+"卷" = 7
+han_space = 7
+code_space = 6
+escape = 3
+num = 3
+Unknown = 7
+
+[record.output.cause_counts]
+lang = 8
+"卷+han_space" = 7
+case = 5
+code_space = 5
+num = 3
+"lang+case" = 2
+escape = 2
+"case+escape+code_space" = 1
+Unknown = 7
 [[record]]
 entries_rev = "zotero-chinese/styles#ce0786d7"
 csl_updated_at = "2025-01-08T17:10:39+08:00"
 hayagriva_source = "git+https://github.com/typst/hayagriva?branch=main#a2bfce8f07962ba0af972c23050e8259c30c7212"
+
+[record.output]
+n_entries = 128
+n_diff = 40
+
+[record.output.diff_counts]
+lang = 10
+case = 8
+"卷" = 7
+han_space = 7
+code_space = 6
+escape = 3
+num = 3
+Unknown = 7
+
+[record.output.cause_counts]
+lang = 8
+"卷+han_space" = 7
+case = 5
+code_space = 5
+num = 3
+"lang+case" = 2
+escape = 2
+"case+escape+code_space" = 1
+Unknown = 7
+[[record]]
+entries_rev = "zotero-chinese/styles#ce0786d7"
+csl_updated_at = "2025-01-08T17:10:39+08:00"
+hayagriva_source = "git+https://github.com/typst/hayagriva?branch=main#a137441413a5907c15ced44d1502dfb9fa1a3014"
 
 [record.output]
 n_entries = 128
