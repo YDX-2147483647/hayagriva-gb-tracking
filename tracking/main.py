@@ -1,5 +1,5 @@
-from collections import Counter, deque
-from itertools import chain
+from collections import deque
+from dataclasses import asdict
 from pathlib import Path
 from sys import stderr
 
@@ -8,12 +8,18 @@ from hayagriva import check_csl, reference
 
 from .diff import Difference
 from .fixture import FILE, ensure_fixture
+from .history import InputVersion, OutputSummary
 from .load_entries import load_entries
 from .util import CACHE_DIR
 
 
 def compare_outputs(
-    expected_output: str, actual_output: str, *, show_summary: bool, show_details: bool
+    expected_output: str,
+    actual_output: str,
+    *,
+    show_summary: bool,
+    show_details: bool,
+    update_history: Path | None,
 ) -> None:
     """Compare the expected and actual outputs, and print the differences."""
 
@@ -35,31 +41,47 @@ Expected: {diff.outputs[0]}
 Actual:   {diff.outputs[1]}
 """)
 
-    if show_summary:
-        print("Summary of differences:")
-        differences = Counter(
-            chain.from_iterable(
-                d.eq_ignore_min if d.eq_ignore_min is not None else ("Unknown",)
-                for d in diff_list
-            )
+    if show_summary or update_history is not None:
+        output_summary = OutputSummary.from_diff_list(
+            diff_list=diff_list,
+            n_entries=len(expected_output.splitlines()),
         )
-        for d, count in differences.most_common():
-            if d != "Unknown":
-                print(f"  {d:>10}: {count:3} ≈ {count / len(diff_list):>3.0%}")
-        if (count := differences.get("Unknown")) is not None:
-            print(f"  {'Unknown':>10}: {count:3} ≈ {count / len(diff_list):>3.0%}")
 
-        print("\nSummary of combinations of differences:")
-        causes = Counter(d.cause() for d in diff_list)
-        for cause, count in causes.most_common():
-            if cause != "Unknown":
+        if show_summary:
+            print("Summary of differences:")
+            for d, count in output_summary.diff_counts.items():
+                print(f"  {d:>10}: {count:3} ≈ {count / output_summary.n_diff:>3.0%}")
+
+            print("\nSummary of combinations of differences:")
+            for cause, count in output_summary.cause_counts.items():
                 print(
-                    f"  {count:3} ≈ {count / len(diff_list):>3.0%} caused by {cause.replace('+', ' + ')}"
+                    f"  {count:3} ≈ {count / output_summary.n_diff:>3.0%} caused by {cause.replace('+', ' + ')}"
                 )
-        if (count := causes.get("Unknown")) is not None:
-            print(f"  {count:3} ≈ {count / len(diff_list):>3.0%} caused by Unknown")
 
-        print(f"\nTotal differences: {len(diff_list)}")
+            print(
+                f"\n{output_summary.n_diff} of {output_summary.n_entries} entries differ."
+            )
+
+        if update_history is not None:
+            from tomlkit import aot, document, dumps, parse, table
+
+            if update_history.exists():
+                doc = parse(update_history.read_text(encoding="utf-8"))
+                records = doc["record"]
+            else:
+                doc = document()
+                doc["version"] = 1
+                records = aot()
+                doc.add("record", records)
+
+            tab = table()
+            for k, v in asdict(InputVersion.build()).items():
+                tab.add(k, v)
+            tab.add("output", asdict(output_summary))
+
+            records.append(tab)  # type: ignore
+
+            update_history.write_text(dumps(doc), encoding="utf-8")
 
 
 @click.command()
@@ -81,7 +103,18 @@ Actual:   {diff.outputs[1]}
     is_flag=True,
     help="Save the actual output. (default: true)",
 )
-def main(show_details: bool, show_summary: bool, save_output: bool) -> None:
+@click.option(
+    "--update-history",
+    type=click.Path(dir_okay=False, writable=True, path_type=Path),
+    default=None,
+    help="Save the history of differences to a file.",
+)
+def main(
+    show_details: bool,
+    show_summary: bool,
+    save_output: bool,
+    update_history: Path | None,
+) -> None:
     ensure_fixture()
 
     expected_output = FILE.expected_output.read_text(encoding="utf-8")
@@ -101,6 +134,7 @@ def main(show_details: bool, show_summary: bool, save_output: bool) -> None:
             actual_output,
             show_summary=show_summary,
             show_details=show_details,
+            update_history=update_history,
         )
 
     if save_output:

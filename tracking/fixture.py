@@ -60,17 +60,6 @@ def ensure_fixture() -> None:
             ),
             encoding="utf-8",
         )
-    csl_updated_at = (
-        ET.parse(FILE.csl)
-        .getroot()
-        .find(
-            "cs:info/cs:updated", namespaces={"cs": "http://purl.org/net/xbiblio/csl"}
-        )
-    )
-    print(
-        f"CSL version: {csl_updated_at.text if csl_updated_at is not None else '(unknown)'}",
-        file=stderr,
-    )
 
     if not FILE.expected_output.exists():
         index_md = _download(
