@@ -28,7 +28,8 @@ function InputVersion({ record }: { record: HistoryRecord }): JSX.Element {
       <li>
         Hayagriva版本：
         <a href={buildHayagrivaUrl(record.hayagriva_source)}>
-          {record.label} — <time dateTime={record.date}>{record.date}</time>
+          <strong>{record.label}</strong> —{' '}
+          <time dateTime={record.date}>{record.date}</time>
         </a>
       </li>
       <li>
@@ -58,10 +59,10 @@ function DiffCountsTable({
         <caption>各项差异的分布</caption>
         <thead>
           <tr>
-            <th className="text-right" align="right">
+            <th align="right" className="text-right">
               差异
             </th>
-            <th className="text-nowrap text-right" align="right">
+            <th align="right" className="text-nowrap text-right">
               总数量 ≈ 总占比
             </th>
             <th className="min-w-[14em]">解释</th>
@@ -70,10 +71,10 @@ function DiffCountsTable({
         <tbody>
           {rows.map(([key, count]) => (
             <tr key={key}>
-              <td className="text-right" align="right">
-                {key}
+              <td align="right" className="text-right">
+                {key === 'Unknown' ? '其它' : key}
               </td>
-              <td className="text-nowrap text-right" align="right">
+              <td align="right" className="text-nowrap text-right">
                 {count} ≈{' '}
                 {(
                   (count / rows.reduce((sum, [, c]) => sum + c, 0)) *
@@ -103,7 +104,7 @@ function CauseCountsTable({
       <caption>各种差异组合情况的分布</caption>
       <thead>
         <tr>
-          <th className="text-right" align="right">
+          <th align="right" className="text-right">
             数量 ≈ 占比
           </th>
           <th>
@@ -114,7 +115,7 @@ function CauseCountsTable({
       <tbody>
         {rows.map(([key, count]) => (
           <tr key={key}>
-            <td className="text-right" align="right">
+            <td align="right" className="text-right">
               {count} ≈{' '}
               {(
                 (count / rows.reduce((sum, [, c]) => sum + c, 0)) *
@@ -122,11 +123,104 @@ function CauseCountsTable({
               ).toFixed(0)}
               %
             </td>
-            <td>{key.replaceAll('+', ' + ')}</td>
+            <td>{key === 'Unknown' ? '其它' : key.replaceAll('+', ' + ')}</td>
           </tr>
         ))}
       </tbody>
     </table>
+  )
+}
+
+function hasSpecialCase(record: HistoryRecord): boolean {
+  return [
+    'v0.8.1',
+    'v0.9.0',
+    'v0.9.1',
+    'main (a2bfce8)',
+    'main (a137441)',
+  ].includes(record.label.replaceAll('\n', ' '))
+}
+
+function SpecialCases({
+  record,
+}: {
+  record: HistoryRecord
+}): JSX.Element | null {
+  if (!hasSpecialCase(record)) {
+    return null
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="mx-auto mt-0 w-fit">
+        <caption>其它差异的具体内容</caption>
+        <colgroup>
+          <col />
+          <col />
+          <col className="min-w-[16em]" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>编号</th>
+            <th>
+              <span className="text-nowrap">以上已列出</span>
+              <span className="text-nowrap">的差异</span>
+            </th>
+            <th>其它差异</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>[107]</td>
+            <td>code_space</td>
+            <td>析出文献缺少编委会 editor</td>
+          </tr>
+          <tr>
+            <td>[26]</td>
+            <td></td>
+            <td>en dash 与 hyphen minus 的区别（可能是citeproc-js不对？）</td>
+          </tr>
+          <tr>
+            <td>[88]</td>
+            <td>lang</td>
+            <td>
+              文献类型代码错误（M误为M/OL），没支持CSL-JSON的<code>nocase</code>
+              标签，多DOI（可能是citeproc-js不对？）
+            </td>
+          </tr>
+          <tr>
+            <td>[15]</td>
+            <td>case</td>
+            <td>
+              没支持CSL-JSON的<code>nocase</code>标签
+            </td>
+          </tr>
+          <tr>
+            <td>[111]</td>
+            <td></td>
+            <td>
+              没支持CSL-JSON的<code>nocase</code>标签和
+              <code>issued.literal</code>格式
+            </td>
+          </tr>
+          <tr>
+            <td>[23]</td>
+            <td></td>
+            <td>
+              名字后缀<code>Jr,</code>误为<code>Jr.,</code>
+            </td>
+          </tr>
+          <tr>
+            <td>[110]</td>
+            <td></td>
+            <td>
+              名字后缀<code>Jr,</code>误为<code>Jr.,</code>、没支持CSL-JSON的
+              <code>issued.literal</code>格式
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   )
 }
 
@@ -139,7 +233,8 @@ export default function RecordDetails({
   const causeItems = Object.entries(record.output.cause_counts)
 
   return (
-    <section className="prose mx-auto max-w-4/5">
+    <section className="prose">
+      <h2>所选日期的详细数据</h2>
       <InputVersion record={record} />
       <p>
         GB/T 7714—2015的{record.output.n_entries}条示例文献中，有
@@ -148,66 +243,19 @@ export default function RecordDetails({
         %。
       </p>
       <p>
-        下表是各种差异的数量以及它们在所有差异文献中的占比。（由于一条文献可能同时存在多项差异，各项占比总和可能超过100%。）
+        下表是各种差异的数量以及它们在所有差异文献中的占比。由于一条文献可能同时存在多项差异，从而同时计入多项，所以各项占比总和可能超过100%。另外，“其它”差异文献也可能存在已列出的差异，不过为简便，下表统一不计入。
       </p>
       <DiffCountsTable rows={diffItems} />
       <p>
-        “其它”差异文献也可能存在以上已列出的差异。不过为简便，上表统一不计入。
+        下表展示了各种差异组合情况的数量及占比。与上表不同，下表各项互斥，能更具体地描述差异文献的分布。
       </p>
       <CauseCountsTable rows={causeItems} />
-      <p>注：</p>
-      <ul>
-        <li>
-          <p>
-            这些示例文献的
-            <a href="https://github.com/zotero-chinese/styles/raw/ce0786d7/lib/data/items/gbt7714-data.json">
-              CSL-JSON由Zotero中文社区提供
-            </a>
-            。
-          </p>
-        </li>
-        <li>
-          <p>
-            测试使用的CSL样式不是Typst内置的<code>gb-7714-2015-numeric</code>
-            ，而是
-            <a href="https://zotero-chinese.com/styles/GB-T-7714—2015（顺序编码，双语）/">
-              <code>GB-T-7714—2015（顺序编码，双语）.csl</code>
-            </a>
-            。
-          </p>
-        </li>
-        <li>
-          <p>
-            比较对象是
-            <a href="https://github.com/zotero-chinese/styles/raw/ce0786d7/src/GB-T-7714—2015（顺序编码，双语）/index.md">
-              Zotero中文社区将该CSL传入citeproc-js生成的<code>index.md</code>
-            </a>
-            ，与我将
-            <a href="https://typst-doc-cn.github.io/csl-sanitizer/chinese/src/GB-T-7714—2015（顺序编码，双语）/GB-T-7714—2015（顺序编码，双语）.csl">
-              相应净化版CSL
-            </a>
-            传入Hayagriva生成的结果。二者之所以采用不同CSL，是因为未
-            <a href="https://typst-doc-cn.github.io/csl-sanitizer/chinese/src/GB-T-7714—2015（顺序编码，双语）/diff.html">
-              净化
-            </a>
-            的原始CSL传入Hayagriva会报错 CSL file malformed。
-          </p>
-          <p>比较时只比较了文本内容，未考虑链接等特殊样式。</p>
-        </li>
-        <li>
-          <p>
-            以上测试基于CSL-JSON，而非Typst正常使用的BibTeX或YAML，因此与实用可能存在差距。
-          </p>
-          <p>
-            一方面，CSL-JSON中的变量与CSL样式完全匹配，不涉及从BibTeX、YAML转换，所以信息损失更少。
-          </p>
-          <p>
-            另一方面，Hayagriva代码中的<code>csl-json</code>
-            特性只用于开发测试，未经过仔细验证，所以并不识别CSL-JSON某些特殊格式，特别是
-            <code>note</code>字段中的内容需要自行转换。
-          </p>
-        </li>
-      </ul>
+      {hasSpecialCase(record) && (
+        <>
+          <p>我们还人工分析了其它差异的具体内容，如下表。</p>
+          <SpecialCases record={record} />
+        </>
+      )}
     </section>
   )
 }

@@ -4,8 +4,6 @@ import {
   type GridComponentOption,
   LegendComponent,
   type LegendComponentOption,
-  TitleComponent,
-  type TitleComponentOption,
   ToolboxComponent,
   type ToolboxComponentOption,
   TooltipComponent,
@@ -20,7 +18,6 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import type { Category, HistoryRecord } from './types'
 
 echarts.use([
-  TitleComponent,
   ToolboxComponent,
   TooltipComponent,
   GridComponent,
@@ -31,7 +28,6 @@ echarts.use([
 ])
 
 type EChartsOption = echarts.ComposeOption<
-  | TitleComponentOption
   | ToolboxComponentOption
   | TooltipComponentOption
   | GridComponentOption
@@ -103,7 +99,6 @@ function buildOption(
   categories: Category[],
 ): EChartsOption {
   return {
-    title: { text: 'Hayagriva GB Tracking' },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -197,7 +192,7 @@ function buildOption(
       top: '15%',
     },
     toolbox: {
-      feature: { saveAsImage: {} },
+      feature: { saveAsImage: { name: 'Hayagriva-GB-tracking' } },
     },
     xAxis: [{ type: 'time', splitArea: { show: true } }],
     yAxis: [{ type: 'value' }],
