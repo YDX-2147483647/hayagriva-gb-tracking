@@ -1,5 +1,5 @@
 import { categories, records } from 'virtual:history_data'
-import { useState } from 'react'
+import { StrictMode, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import Chart from './Chart'
 import Postscript from './Postscript'
@@ -27,4 +27,8 @@ const root = document.getElementById('root')
 if (!root) {
   throw new Error('Root container missing')
 }
-ReactDOM.createRoot(root).render(<App />)
+ReactDOM.createRoot(root).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
