@@ -13,7 +13,7 @@ import * as echarts from 'echarts/core'
 import { UniversalTransition } from 'echarts/features'
 import { CanvasRenderer } from 'echarts/renderers'
 import ReactEChartsCore from 'echarts-for-react/lib/core'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import type { Category, HistoryRecord } from './types'
 
@@ -209,8 +209,6 @@ export default function Chart({
   records: HistoryRecord[]
   onSelect: (recordIndex: number) => void
 }): JSX.Element {
-  const chartRef = useRef<InstanceType<typeof ReactEChartsCore>>(null)
-
   const option = buildOption(records, categories)
 
   // Select the last record on start.
@@ -219,17 +217,9 @@ export default function Chart({
   const onShowTip = (params: { dataIndex: number }) => {
     tooltipFocus.current = params.dataIndex
   }
-  useEffect(() => {
-    if (chartRef.current !== null) {
-      const chart = chartRef.current.getEchartsInstance()
-      // https://echarts.apache.org/handbook/zh/concepts/event#监听“空白处”的事件
-      chart.getZr().on('click', () => onSelect(tooltipFocus.current))
-    }
-  }, [onSelect])
 
   return (
     <ReactEChartsCore
-      ref={chartRef}
       echarts={echarts}
       option={option}
       onEvents={{ showTip: onShowTip }}
@@ -237,6 +227,17 @@ export default function Chart({
         margin: 'auto',
         width: '90%',
         height: '80vh',
+      }}
+      onChartReady={(chart) => {
+        // Due to an echarts-for-react issue, `useEffect` can't get the final `chart`.
+        // Therefore, we have to use onChartReady.
+        // https://github.com/hustcc/echarts-for-react/issues/463#issuecomment-995502947
+        // https://github.com/hustcc/echarts-for-react/issues/608
+
+        // https://echarts.apache.org/handbook/zh/concepts/event#监听“空白处”的事件
+        chart.getZr().on('click', () => {
+          onSelect(tooltipFocus.current)
+        })
       }}
     />
   )
