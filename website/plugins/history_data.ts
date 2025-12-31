@@ -44,6 +44,7 @@ const tags = [
 
 // To update:
 //   git log -1 --format='%h %ad' --date=iso-strict ⟨COMMIT-HASH⟩
+// In the typst/hayagriva repo, author dates and committer dates are usually the same dates in different timezones.
 const commits = `
 a2bfce8 2025-12-21T06:07:37+01:00
 a137441 2025-12-27T22:30:59Z

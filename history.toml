@@ -1,6 +1,3 @@
-# To update:
-#   cargo add --git https://github.com/typst/hayagriva [--branch main] / [--tag vX.Y.Z]
-#   uv run -m tracking --update-history history.toml
 version = 1
 
 [[record]]
