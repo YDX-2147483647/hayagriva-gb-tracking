@@ -1,3 +1,5 @@
+import ExternalLink from './ExternalLink'
+
 export default function Postscript(): JSX.Element {
   return (
     <section className="prose">
@@ -17,42 +19,44 @@ export default function Postscript(): JSX.Element {
           <tr>
             <th>参考文献引擎</th>
             <td>
-              <a href="https://docs.rs/hayagriva/">typst/hayagriva</a>
+              <ExternalLink href="https://docs.rs/hayagriva/">
+                typst/hayagriva
+              </ExternalLink>
             </td>
             <td>
-              <a href="https://citeproc-js.readthedocs.io/">
+              <ExternalLink href="https://citeproc-js.readthedocs.io/">
                 Juris-M/citeproc-js
-              </a>
+              </ExternalLink>
             </td>
           </tr>
           <tr>
             <th className="text-nowrap">CSL样式</th>
             <td>
-              <a href="https://typst-doc-cn.github.io/csl-sanitizer/chinese/src/GB-T-7714—2015（顺序编码，双语）/GB-T-7714—2015（顺序编码，双语）.csl">
+              <ExternalLink href="https://typst-doc-cn.github.io/csl-sanitizer/chinese/src/GB-T-7714—2015（顺序编码，双语）/GB-T-7714—2015（顺序编码，双语）.csl">
                 Typst中文社区净化版
-              </a>
+              </ExternalLink>
             </td>
             <td>
-              <a href="https://zotero-chinese.com/styles/GB-T-7714—2015（顺序编码，双语）/">
+              <ExternalLink href="https://zotero-chinese.com/styles/GB-T-7714—2015（顺序编码，双语）/">
                 Zotero中文社区原版
-              </a>
+              </ExternalLink>
             </td>
           </tr>
           <tr>
             <th>示例文献</th>
             <td colSpan={2}>
-              <a href="https://github.com/zotero-chinese/styles/blob/main/lib/data/items/gbt7714-data.json">
+              <ExternalLink href="https://github.com/zotero-chinese/styles/blob/main/lib/data/items/gbt7714-data.json">
                 Zotero中文社区提供的<code>gbt7714-data.json</code>
-              </a>
+              </ExternalLink>
             </td>
           </tr>
           <tr>
             <th className="text-nowrap">结果来源</th>
             <td>本项目编程生成</td>
             <td>
-              <a href="https://github.com/zotero-chinese/styles/blob/main/src/GB-T-7714—2015（顺序编码，双语）/index.md#gbt-77142015-示例文献">
+              <ExternalLink href="https://github.com/zotero-chinese/styles/blob/main/src/GB-T-7714—2015（顺序编码，双语）/index.md#gbt-77142015-示例文献">
                 Zotero中文社区提供的<code>index.md</code>
-              </a>
+              </ExternalLink>
             </td>
           </tr>
         </tbody>
@@ -69,16 +73,16 @@ export default function Postscript(): JSX.Element {
           <p>
             测试使用的<strong>CSL样式</strong>不是Typst内置的
             <code>gb-7714-2015-numeric</code>，而是
-            <a href="https://zotero-chinese.com/styles/GB-T-7714—2015（顺序编码，双语）/">
+            <ExternalLink href="https://zotero-chinese.com/styles/GB-T-7714—2015（顺序编码，双语）/">
               <code>GB-T-7714—2015（顺序编码，双语）.csl</code>
-            </a>
+            </ExternalLink>
             。
           </p>
           <p>
             而且实验组和对照组采用的CSL不同，因为未
-            <a href="https://typst-doc-cn.github.io/csl-sanitizer/chinese/src/GB-T-7714—2015（顺序编码，双语）/diff.html">
+            <ExternalLink href="https://typst-doc-cn.github.io/csl-sanitizer/chinese/src/GB-T-7714—2015（顺序编码，双语）/diff.html">
               净化
-            </a>
+            </ExternalLink>
             的原版CSL传入Hayagriva会报错 CSL file malformed。
           </p>
         </li>

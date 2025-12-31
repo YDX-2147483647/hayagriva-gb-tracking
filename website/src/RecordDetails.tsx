@@ -1,4 +1,5 @@
 import { descriptions } from './category_description'
+import ExternalLink from './ExternalLink'
 import type { Category, HistoryRecord } from './types'
 
 function buildHayagrivaUrl(hayagriva_source: string): string {
@@ -27,10 +28,10 @@ function InputVersion({ record }: { record: HistoryRecord }): JSX.Element {
     <ul>
       <li>
         Hayagriva版本：
-        <a href={buildHayagrivaUrl(record.hayagriva_source)}>
+        <ExternalLink href={buildHayagrivaUrl(record.hayagriva_source)}>
           <strong>{record.label}</strong> —{' '}
           <time dateTime={record.date}>{record.date}</time>
-        </a>
+        </ExternalLink>
       </li>
       <li>
         CSL样式版本：
@@ -38,7 +39,9 @@ function InputVersion({ record }: { record: HistoryRecord }): JSX.Element {
       </li>
       <li>
         示例文献版本：
-        <a href={buildEntriesUrl(record.entries_rev)}>{record.entries_rev}</a>
+        <ExternalLink href={buildEntriesUrl(record.entries_rev)}>
+          {record.entries_rev}
+        </ExternalLink>
       </li>
     </ul>
   )
