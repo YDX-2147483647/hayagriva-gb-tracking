@@ -1,6 +1,10 @@
 # Hayagriva对GB/T 7714—2015的支持情况
 
-测试结果见网页。
+测试结果见[网页][gh-pages]。
+
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fydx-2147483647.github.io%2Fhayagriva-gb-tracking%2F)][gh-pages]
+
+[gh-pages]: https://ydx-2147483647.github.io/hayagriva-gb-tracking/
 
 ## 历史记录策略
 
