@@ -23,6 +23,30 @@ function buildEntriesUrl(entries_rev: string): string {
   return `https://github.com/${repo}/blob/${rev}/lib/data/items/gbt7714-data.json`
 }
 
+function TypstInfo({
+  typstInfo,
+}: {
+  typstInfo: HistoryRecord['typstInfo']
+}): JSX.Element {
+  if (typstInfo === null) {
+    return <>相应Typst版本尚未发布</>
+  }
+  const {
+    firstCovered,
+    coveredRange: [start, end],
+  } = typstInfo
+
+  if (start === end) {
+    return <>对应 Typst {firstCovered}</>
+  } else {
+    return (
+      <>
+        Typst {firstCovered} 引入了 Hayagriva {start} 至 {end}
+      </>
+    )
+  }
+}
+
 function InputVersion({ record }: { record: HistoryRecord }): JSX.Element {
   return (
     <ul>
@@ -32,6 +56,8 @@ function InputVersion({ record }: { record: HistoryRecord }): JSX.Element {
           <strong>{record.label}</strong> —{' '}
           <time dateTime={record.date}>{record.date}</time>
         </ExternalLink>
+        <br />
+        （<TypstInfo typstInfo={record.typstInfo} />）
       </li>
       <li>
         CSL样式版本：

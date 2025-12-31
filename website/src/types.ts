@@ -14,8 +14,28 @@ export type OutputSummary = {
 
 export type HistoryRecord = InputVersion & {
   output: OutputSummary
+  /** Human name for the hayagriva version */
   label: string
+  /** The date of the hayagriva version */
   date: string
+  /**
+   * Information about the corresponding typst version
+   *
+   * - `null`
+   *
+   *   No released typst version has included the changes from this hayagriva version
+   *
+   * - `{firstCovered: X, coveredRange: [START, END] }`
+   *
+   *   X is the first typst version that included changes from this hayagriva version.
+   *   In fact, X introduced changes from hayagriva versions from START to END (inclusive).
+   */
+  typstInfo: {
+    /** The first version of typst that includes the changes from this hayagriva version */
+    firstCovered: string
+    /** The range of hayagriva versions (inclusive) covered by that typst version */
+    coveredRange: [string, string]
+  } | null
 }
 
 export interface XPointMeta {
