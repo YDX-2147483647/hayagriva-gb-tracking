@@ -6,7 +6,15 @@ body {
   text-autospace: normal;
 }
 
+ins {
+  text-underline-offset: 0.2em;
+}
+
 .prose {
+  /* Replace the dark theme with a light one */
+  --tw-prose-pre-bg: oklch(96.639% 0.0011 202.634);
+  --tw-prose-pre-code: oklch(27.8% 0.033 256.848);
+
   code {
     background-color: #f5f5f5;
     margin-inline: 0.25em;
@@ -27,7 +35,7 @@ body {
     &:hover,
     &:focus {
       text-decoration: underline;
-      text-underline-offset: 0.3em;
+      text-underline-offset: 0.2em;
     }
   }
 

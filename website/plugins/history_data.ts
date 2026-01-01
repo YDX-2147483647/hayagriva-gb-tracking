@@ -84,6 +84,8 @@ const typstTags = [
   { publishedAt: '2023-03-21T17:23:21Z', tagName: 'v23-03-21' },
 ]
 
+const ROOT = path.resolve(__dirname, '..')
+
 /** A map from tag names to their published dates */
 const tagDates: Record<string, string> = Object.fromEntries(
   tags.map((t) => [t.tagName, t.publishedAt]),
@@ -154,6 +156,24 @@ function calculateTypstInfo(date: string): HistoryRecord['typstInfo'] {
   }
 }
 
+function loadResult(): HistoryRecord['result'] {
+  try {
+    const cacheDir = path.join(ROOT, '../target/tracking-cache/')
+    const expected = fs.readFileSync(
+      path.join(cacheDir, 'expected-output.txt'),
+      'utf8',
+    )
+    const actual = fs.readFileSync(
+      path.join(cacheDir, 'actual-output.txt'),
+      'utf8',
+    )
+    return { expected, actual }
+  } catch (error) {
+    console.warn('Failed to load result from tracking cache, ignored:', error)
+    return null
+  }
+}
+
 export default function historyDataPlugin() {
   const virtualModuleId = 'virtual:history_data'
   const resolvedVirtualModuleId = `\0${virtualModuleId}`
@@ -170,15 +190,14 @@ export default function historyDataPlugin() {
         return
       }
 
-      const root = path.resolve(__dirname, '..')
-      const historyPath = path.join(root, '../history.toml')
+      const historyPath = path.join(ROOT, '../history.toml')
 
       const tomlText = fs.readFileSync(historyPath, 'utf8')
       const history = parseToml(tomlText) as {
         version: number
         record: (InputVersion & { output: OutputSummary })[]
       }
-      const records: HistoryRecord[] = history.record.map((r) => {
+      const records: HistoryRecord[] = history.record.map((r, i) => {
         const undeclared = Object.keys(r.output.diff_counts).filter(
           (k) => !categories.includes(k),
         )
@@ -189,7 +208,11 @@ export default function historyDataPlugin() {
 
         const { label, date } = resolveSourceUrl(r.hayagriva_source)
         const typstInfo = calculateTypstInfo(date)
-        return { label, date, typstInfo, ...r }
+
+        const isLast = i === history.record.length - 1
+        const result = isLast ? loadResult() : null
+
+        return { label, date, typstInfo, result, ...r }
       })
 
       const moduleCode = [

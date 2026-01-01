@@ -1,4 +1,5 @@
 import { descriptions } from './category_description'
+import DiffResult from './DiffOutput'
 import ExternalLink from './ExternalLink'
 import type { Category, HistoryRecord } from './types'
 
@@ -284,6 +285,12 @@ export default function RecordDetails({
           <p>我们还人工分析了其它差异的具体内容，如下表。</p>
           <SpecialCases record={record} />
         </>
+      )}
+      {record.result !== null && (
+        <DiffResult
+          actual={record.result.actual}
+          expected={record.result.expected}
+        />
       )}
     </section>
   )

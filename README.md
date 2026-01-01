@@ -49,6 +49,8 @@ uv run -m tracking --show-details
 uv run -m tracking --update-history history.toml
 ```
 
+此步有缓存，位于``target/tracking-cache/`。
+
 ### 展示测试结果
 
 `pnpm dev`会读取上一步生成的`history.toml`，在网页上展示出来。
@@ -60,3 +62,5 @@ cd website
 pnpm install
 pnpm dev --open
 ```
+
+如果运行过上一步（并且未指定`--no-save-output`），那么当时缓存的`{expected,actual}-output.txt`还会被当作`history.toml`最后一个版本的输出，显示到网页上。

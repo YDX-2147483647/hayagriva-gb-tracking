@@ -14,10 +14,12 @@ export type OutputSummary = {
 
 export type HistoryRecord = InputVersion & {
   output: OutputSummary
+
   /** Human name for the hayagriva version */
   label: string
   /** The date of the hayagriva version */
   date: string
+
   /**
    * Information about the corresponding typst version
    *
@@ -36,6 +38,15 @@ export type HistoryRecord = InputVersion & {
     /** The range of hayagriva versions (inclusive) covered by that typst version */
     coveredRange: [string, string]
   } | null
+
+  /**
+   * The expected and actual output for the input.
+   *
+   * This is an optional field.
+   * - For the latest version input, `target/tracking-cache/{expected,actual}-output.txt` (if exists) will be taken as the result.
+   * - For other versions, the results will always be omitted.
+   */
+  result: { expected: string; actual: string } | null
 }
 
 export interface XPointMeta {

@@ -163,6 +163,10 @@ jobs:
       - uses: actions/download-artifact@v7
         with:
           name: history.toml
+      - uses: actions/download-artifact@v6
+        with:
+          name: tracking-output
+          path: target/tracking-cache
 
       - uses: pnpm/action-setup@v4
         with:

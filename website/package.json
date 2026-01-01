@@ -12,6 +12,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "diff": "^8.0.2",
     "echarts": "^6.0.0",
     "echarts-for-react": "^3.0.5",
     "react": "^18.3.1",
