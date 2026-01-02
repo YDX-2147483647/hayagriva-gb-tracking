@@ -358,3 +358,29 @@ num = 3
 escape = 2
 "case+escape+code_space" = 1
 Unknown = 7
+[[record]]
+entries_rev = "zotero-chinese/styles#336da08"
+csl_updated_at = "2025-01-08T17:10:39+08:00"
+hayagriva_source = "git+https://github.com/typst/hayagriva?branch=main#a137441413a5907c15ced44d1502dfb9fa1a3014"
+
+[record.output]
+n_entries = 141
+n_diff = 47
+
+[record.output.diff_counts]
+lang = 9
+case = 8
+"卷" = 3
+num = 2
+code_space = 2
+Unknown = 25
+
+[record.output.cause_counts]
+lang = 7
+case = 7
+"卷" = 3
+code_space = 2
+"lang+case" = 1
+"lang+num" = 1
+num = 1
+Unknown = 25
