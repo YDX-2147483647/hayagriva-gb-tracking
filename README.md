@@ -64,3 +64,7 @@ pnpm dev --open
 ```
 
 如果运行过上一步（并且未指定`--no-save-output`），那么当时缓存的`{expected,actual}-output.txt`还会被当作`history.toml`最后一个版本的输出，显示到网页上。
+
+注：由于 python 与 js 默认舍入算法的差异[^round]，`uv run -m tracking`和`pnpm dev`显示的百分比可能略有差异。
+
+[^round]: 例如，python `[f'{x:.0f}' for x in [2.4, 2.5, 3.4, 3.5]]`给出`['2', '2', '3', '4']`，但 js `[2.4, 2.5, 3.4, 3.5].map(x => x.toFixed(0))`给出`[ '2', '3', '3', '4' ]`。详见 [`round` — Built-in Functions — Python 3 documentation](https://docs.python.org/3/library/functions.html#round) 与 [`Number.prototype.toFixed()` - JavaScript | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed)。

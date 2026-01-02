@@ -76,8 +76,10 @@ function InputVersion({ record }: { record: HistoryRecord }): JSX.Element {
 
 function DiffCountsTable({
   rows,
+  total,
 }: {
   rows: [Category, number][]
+  total: number
 }): JSX.Element | null {
   if (rows.length === 0) {
     return null
@@ -105,12 +107,7 @@ function DiffCountsTable({
                 {key === 'Unknown' ? '其它' : key}
               </td>
               <td align="right" className="text-nowrap text-right">
-                {count} ≈{' '}
-                {(
-                  (count / rows.reduce((sum, [, c]) => sum + c, 0)) *
-                  100
-                ).toFixed(0)}
-                %
+                {count} ≈ {((count / total) * 100).toFixed(0)}%
               </td>
               <td>{descriptions[key as keyof typeof descriptions]}</td>
             </tr>
@@ -123,8 +120,10 @@ function DiffCountsTable({
 
 function CauseCountsTable({
   rows,
+  total,
 }: {
   rows: [string, number][]
+  total: number
 }): JSX.Element | null {
   if (rows.length === 0) {
     return null
@@ -146,12 +145,7 @@ function CauseCountsTable({
         {rows.map(([key, count]) => (
           <tr key={key}>
             <td align="right" className="text-right">
-              {count} ≈{' '}
-              {(
-                (count / rows.reduce((sum, [, c]) => sum + c, 0)) *
-                100
-              ).toFixed(0)}
-              %
+              {count} ≈ {((count / total) * 100).toFixed(0)}%
             </td>
             <td>{key === 'Unknown' ? '其它' : key.replaceAll('+', ' + ')}</td>
           </tr>
@@ -275,11 +269,11 @@ export default function RecordDetails({
       <p>
         下表是各种差异的数量以及它们在所有差异文献中的占比。由于一条文献可能同时存在多项差异，从而同时计入多项，所以各项占比总和可能超过100%。另外，“其它”差异文献也可能存在已列出的差异，不过为简便，下表统一不计入。
       </p>
-      <DiffCountsTable rows={diffItems} />
+      <DiffCountsTable rows={diffItems} total={record.output.n_diff} />
       <p>
         下表展示了各种差异组合情况的数量及占比。与上表不同，下表各项互斥，能更具体地描述差异文献的分布。
       </p>
-      <CauseCountsTable rows={causeItems} />
+      <CauseCountsTable rows={causeItems} total={record.output.n_diff} />
       {hasSpecialCase(record) && (
         <>
           <p>我们还人工分析了其它差异的具体内容，如下表。</p>
