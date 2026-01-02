@@ -32,6 +32,17 @@ def load_entries(file: Path) -> str:
                 # Parse line
                 match line.split(": ", maxsplit=1):
                     case [key, value]:
+                        if key.startswith("tex.") and (
+                            key_trimmed := key.removeprefix("tex.")
+                        ) in {"DOI", "doi", "location", "institution"}:
+                            key = key_trimmed
+
+                        if key == "doi":
+                            key = "DOI"
+
+                        if key == "Book Title":
+                            key = "container-title"
+
                         pass
                     case [value] if re.match(r"^10\.\d{4,9}/[-._;()/:A-Z0-9]+$", value):
                         key = "DOI"
@@ -48,7 +59,25 @@ def load_entries(file: Path) -> str:
                         # These are special types used by GB-T-7714—2015（顺序编码，双语）.csl.
                         or (key == "type" and value in {"collection", "periodical"})
                     )
-                    and key not in {"tex.entrytype"}
+                    and key
+                    not in {
+                        "tex.entrytype",
+                        "number",
+                        "tex.author_transliteration_en",
+                        "tex.title_translation_en",
+                        "tex.journal_translation_en",
+                        "tex.eid",
+                        "PMID",
+                        "CSTR",
+                        "tex.cstr",
+                        "tex.holder",
+                        "tex.number",
+                        "archive-place",
+                        "dimensions",
+                        "version",
+                    }
+                    # `original-author` is too complex to be parsed. It may contain `||` or span multiple lines.
+                    and not key.startswith("original-")
                 ):
                     assert key in {
                         "DOI",
@@ -57,6 +86,10 @@ def load_entries(file: Path) -> str:
                         "container-title",
                         "type",
                         "issue",
+                        "jurisdiction",
+                        "location",
+                        "volume",
+                        "institution",
                     }, (
                         f"Trying to extract a new cheater data from the note field in CSL-JSON: “{line}” of {entry['id']}. Check if it is expected."
                     )
@@ -68,9 +101,5 @@ def load_entries(file: Path) -> str:
                 entry["note"] = "\n".join(note_rest)
             else:
                 del entry["note"]
-
-    # Sort entries to be consistent with zotero-chinese.
-    # https://github.com/zotero-chinese/styles/blob/ce0786d7/lib/data/index.ts#L103
-    entries.sort(key=lambda e: e["id"])
 
     return json.dumps(entries, ensure_ascii=False)
