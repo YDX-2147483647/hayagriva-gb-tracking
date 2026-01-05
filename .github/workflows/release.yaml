@@ -252,4 +252,4 @@ jobs:
             Cargo.lock
             wheels-*/hayagriva_py-*
       - run: |
-          echo "🎉 Created a release for hayagriva-py ${{ steps.haya.outputs.version }}. Please publish [the draft release](${{ github.server_url }}/${{ github.repository }}/releases)."
+          echo "🎉 Created a release for hayagriva-py ${{ steps.haya.outputs.version }}. Please publish [the draft release](${{ github.server_url }}/${{ github.repository }}/releases)." >> "$GITHUB_STEP_SUMMARY"

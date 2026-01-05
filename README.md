@@ -20,7 +20,7 @@
 
 `maturin develop`会将rust库`hayagriva`编译成python包，供后续步骤调用。
 
-此步需要rust工具链；如无条件，可跳过此步，转而[从 GitHub Actions 下载编译好的`hayagriva-py-wheels-*`](https://github.com/YDX-2147483647/hayagriva-gb-tracking/actions/workflows/build.yaml)，解压，然后`uv pip install path/to/hayagriva_py-*.whl`。
+此步需要rust工具链；如无条件，可跳过此步，转而[从 GitHub Releases 下载编译好的`hayagriva-py-wheels-*`](https://github.com/YDX-2147483647/hayagriva-gb-tracking/releases)，解压，然后`uv pip install path/to/hayagriva_py-*.whl`。
 
 开发本项目用的maturin通过`uv tool install maturin`安装，版本为1.10.2。[其它安装方法](https://www.maturin.rs/installation.html)、其它版本的maturin应该也可使用。
 
