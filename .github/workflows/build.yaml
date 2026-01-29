@@ -22,7 +22,7 @@ jobs:
           - runner: ubuntu-22.04
             target: x86_64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
@@ -54,7 +54,7 @@ jobs:
           - runner: ubuntu-22.04
             target: x86_64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
@@ -86,7 +86,7 @@ jobs:
           - runner: windows-latest
             target: x64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
@@ -116,7 +116,7 @@ jobs:
   hayagriva-py-sdist:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
