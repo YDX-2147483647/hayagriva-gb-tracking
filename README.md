@@ -49,7 +49,7 @@ uv run -m tracking --show-details
 uv run -m tracking --update-history history.toml
 ```
 
-此步有缓存，位于``target/tracking-cache/`。
+此步有缓存，位于`target/tracking-cache/`。
 
 ### 展示测试结果
 
