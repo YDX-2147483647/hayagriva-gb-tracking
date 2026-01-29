@@ -23,7 +23,7 @@
     "@std/toml": "jsr:^1.0.11",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.18",
-    "@types/node": "^25.0.3",
+    "@types/node": "^25.0.9",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^5.1.2",
