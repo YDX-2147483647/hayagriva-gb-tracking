@@ -1,3 +1,5 @@
+import type { JSX } from 'react'
+
 export default function ChartLoading(): JSX.Element {
   return (
     <p

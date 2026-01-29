@@ -1,5 +1,6 @@
-import type { Category } from './types'
+import type { JSX } from 'react'
 import ExternalLink from './ExternalLink'
+import type { Category } from './types'
 
 export const descriptions: Record<Category, JSX.Element> = {
   lang: (

@@ -1,5 +1,5 @@
 import { categories, records } from 'virtual:history_data'
-import { lazy, StrictMode, Suspense, useState } from 'react'
+import { type JSX, lazy, StrictMode, Suspense, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import ChartLoading from './ChartLoading'
 import ExternalLink from './ExternalLink'

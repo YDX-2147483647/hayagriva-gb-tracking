@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import { descriptions } from './category_description'
 import DiffResult from './DiffOutput'
 import ExternalLink from './ExternalLink'

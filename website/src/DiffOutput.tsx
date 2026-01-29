@@ -1,4 +1,5 @@
 import { diffWordsWithSpace } from 'diff'
+import type { JSX } from 'react'
 
 export default function DiffResult({
   actual,

@@ -13,7 +13,7 @@ import * as echarts from 'echarts/core'
 import { UniversalTransition } from 'echarts/features'
 import { CanvasRenderer } from 'echarts/renderers'
 import ReactEChartsCore from 'echarts-for-react/lib/core'
-import { useRef } from 'react'
+import { type JSX, useRef } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import type { Category, HistoryRecord } from './types'
 
