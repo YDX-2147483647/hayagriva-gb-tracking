@@ -30,7 +30,12 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist
+          args: >-
+            --release --out dist
+            --interpreter python3.10
+          # The python version here affects the file name of the generated wheel, which will be referenced by the run-tracking job.
+          # If unspecified, python 3.8 will be used, and maturin 1.12.4 generates `*-cp310-abi3-*.whl`, but maturin 1.12.5 generates `*-cp38-cp38-*.whl`.
+          # Possible cause (unverified): maturin 1.12.4 determines the file name wrongly. https://github.com/PyO3/maturin/pull/3029
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           manylinux: auto
       - name: Build free-threaded wheels
