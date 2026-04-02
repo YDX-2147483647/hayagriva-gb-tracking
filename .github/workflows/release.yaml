@@ -246,7 +246,7 @@ jobs:
           write_output("version", name)
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
       - uses: softprops/action-gh-release@v2
         with:
           draft: true
