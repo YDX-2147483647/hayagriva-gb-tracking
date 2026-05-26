@@ -163,6 +163,7 @@ function hasSpecialCase(record: HistoryRecord): boolean {
     'v0.9.1',
     'main (a2bfce8)',
     'main (a137441)',
+    'main (292b880)',
   ].includes(record.label.replaceAll('\n', ' '))
 }
 
@@ -174,6 +175,7 @@ function SpecialCases({
   if (!hasSpecialCase(record)) {
     return null
   }
+  const label = record.label.replaceAll('\n', ' ')
 
   return (
     <div className="overflow-x-auto">
@@ -197,7 +199,7 @@ function SpecialCases({
         <tbody>
           <tr>
             <td>[107]</td>
-            <td>code_space</td>
+            <td>{label !== 'main (292b880)' && 'code_space'}</td>
             <td>析出文献缺少编委会 editor</td>
           </tr>
           <tr>
@@ -205,6 +207,13 @@ function SpecialCases({
             <td></td>
             <td>en dash 与 hyphen minus 的区别（可能是citeproc-js不对？）</td>
           </tr>
+          {label === 'main (292b880)' && (
+            <tr>
+              <td>[24]</td>
+              <td>lang + case</td>
+              <td>en dash 与 hyphen minus 的区别（可能是citeproc-js不对？）</td>
+            </tr>
+          )}
           <tr>
             <td>[88]</td>
             <td>lang</td>
