@@ -156,15 +156,22 @@ function CauseCountsTable({
   )
 }
 
-function hasSpecialCase(record: HistoryRecord): boolean {
-  return [
-    'v0.8.1',
-    'v0.9.0',
-    'v0.9.1',
-    'main (a2bfce8)',
-    'main (a137441)',
-    'main (292b880)',
-  ].includes(record.label.replaceAll('\n', ' '))
+// A map from record labels to the first known dates that generate an identical result.
+const SPECIAL_CASES = {
+  'v0.8.1': '2025-02-05',
+  'v0.9.0': '2025-02-05',
+  'v0.9.1': '2025-02-05',
+  'main (a2bfce8)': '2025-02-05',
+  'main (a137441)': '2025-02-05',
+
+  'main (292b880)': '2026-05-26',
+  'main (c324b3d)': '2026-05-26',
+}
+function getSpecialCaseVersion(recordLabel: string): string | null {
+  const target = recordLabel.replaceAll('\n', ' ')
+  return target in SPECIAL_CASES
+    ? SPECIAL_CASES[target as keyof typeof SPECIAL_CASES]
+    : null
 }
 
 function SpecialCases({
@@ -172,10 +179,10 @@ function SpecialCases({
 }: {
   record: HistoryRecord
 }): JSX.Element | null {
-  if (!hasSpecialCase(record)) {
+  const v = getSpecialCaseVersion(record.label)
+  if (v === null) {
     return null
   }
-  const label = record.label.replaceAll('\n', ' ')
 
   return (
     <div className="overflow-x-auto">
@@ -199,7 +206,7 @@ function SpecialCases({
         <tbody>
           <tr>
             <td>[107]</td>
-            <td>{label !== 'main (292b880)' && 'code_space'}</td>
+            <td>{v < SPECIAL_CASES['main (292b880)'] && 'code_space'}</td>
             <td>析出文献缺少编委会 editor</td>
           </tr>
           <tr>
@@ -207,7 +214,7 @@ function SpecialCases({
             <td></td>
             <td>en dash 与 hyphen minus 的区别（可能是citeproc-js不对？）</td>
           </tr>
-          {label === 'main (292b880)' && (
+          {v >= SPECIAL_CASES['main (292b880)'] && (
             <tr>
               <td>[24]</td>
               <td>lang + case</td>
@@ -284,7 +291,7 @@ export default function RecordDetails({
         下表展示了各种差异组合情况的数量及占比。与上表不同，下表各项互斥，能更具体地描述差异文献的分布。
       </p>
       <CauseCountsTable rows={causeItems} total={record.output.n_diff} />
-      {hasSpecialCase(record) && (
+      {getSpecialCaseVersion(record.label) !== null && (
         <>
           <p>我们还人工分析了其它差异的具体内容，如下表。</p>
           <SpecialCases record={record} />
