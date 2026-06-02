@@ -2,6 +2,7 @@ use pyo3::prelude::*;
 
 use hayagriva::archive::locales;
 use hayagriva::citationberg::{IndependentStyle, json as csl_json};
+use hayagriva::io;
 use hayagriva::{BibliographyDriver, BibliographyRequest, CitationItem, CitationRequest};
 
 /// Checks if a CSL style is considered malformed by hayagriva.
@@ -80,6 +81,21 @@ fn reference(entries: &str, style: &str) -> PyResult<String> {
     Ok(output)
 }
 
+/// Convert a BibLaTeX `*.bib` to hayagriva `*.yaml`
+#[pyfunction]
+fn biblatex_to_hayagriva(bib: &str) -> PyResult<String> {
+    let bibliography = io::from_biblatex_str(bib).map_err(|e| {
+        pyo3::exceptions::PyValueError::new_err(format!(
+            "Failed to parse the BibLaTeX `*.bib`: {e:?}"
+        ))
+    })?;
+    io::to_yaml_str(&bibliography).map_err(|e| {
+        pyo3::exceptions::PyValueError::new_err(format!(
+            "Failed to convert the bibliography to hayagriva `*.yaml`: {e:?}"
+        ))
+    })
+}
+
 /// A Python module implemented in Rust. The name of this function must match
 /// the `lib.name` setting in the `Cargo.toml`, else Python will not be able to
 /// import the module.
@@ -88,6 +104,7 @@ fn reference(entries: &str, style: &str) -> PyResult<String> {
 fn hayagriva_py(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(reference, m)?)?;
     m.add_function(wrap_pyfunction!(check_csl, m)?)?;
+    m.add_function(wrap_pyfunction!(biblatex_to_hayagriva, m)?)?;
 
     Ok(())
 }
