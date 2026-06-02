@@ -61,7 +61,7 @@ class OutputSummary:
     n_entries: int
     """Number of bibliography entries processed."""
     n_diff: int
-    """Total number of different entires."""
+    """Total number of different entries."""
     diff_counts: dict[Ignorance | Literal["Unknown"], int]
     """Numbers of types of differences, in descending order, with Unknown at the end if it exists."""
     cause_counts: dict[Literal["All", "Unknown"] | str, int]

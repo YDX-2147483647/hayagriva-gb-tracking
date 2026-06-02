@@ -38,14 +38,16 @@ fn warn_hacky_entries(entries: &[csl_json::Item]) {
 
 /// Format a bibliography of all entries.
 ///
+/// `entries` are in CSL-JSON, and `style` is a CSL.
+///
 /// At present, the support for CSL is still quite limited. Therefore, this function returns tab-separated plain text rather than stylized HTML.
 #[pyfunction]
-fn reference(entires: &str, style: &str) -> PyResult<String> {
+fn reference(entries: &str, style: &str) -> PyResult<String> {
     let style = IndependentStyle::from_xml(style).map_err(|e| {
         pyo3::exceptions::PyValueError::new_err(format!("CSL file malformed: {:?}", e))
     })?;
 
-    let entries: Vec<csl_json::Item> = serde_json::from_str(entires).map_err(|e| {
+    let entries: Vec<csl_json::Item> = serde_json::from_str(entries).map_err(|e| {
         pyo3::exceptions::PyValueError::new_err(format!("CSL-JSON file malformed: {:?}", e))
     })?;
     warn_hacky_entries(&entries);
