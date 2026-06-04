@@ -134,6 +134,31 @@ jobs:
           name: hayagriva-py-wheels-sdist
           path: dist
 
+  check-bib-interop:
+    runs-on: ubuntu-latest
+    needs: [hayagriva-py-linux]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+      - run: uv venv
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: hayagriva-py-wheels-linux-x86_64
+          path: dist
+      - run: uv pip install dist/hayagriva_py-*-cp310-abi3-*.whl
+
+      - uses: hustcer/setup-nu@v3
+        with:
+          version: "0.112.2"
+      - uses: typst-community/setup-typst@v5
+        with:
+          typst-version: v0.14
+
+      - run: nu bib-interop/setup-fixtures.nu
+      - run: uv run bib-interop/convert.py
+      - run: nu bib-interop/check-result.nu
+
   run-tracking:
     runs-on: ubuntu-latest
     needs: [hayagriva-py-linux]

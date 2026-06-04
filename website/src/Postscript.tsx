@@ -93,7 +93,11 @@ export default function Postscript(): JSX.Element {
             是CSL-JSON，而非Typst正常使用的BibTeX或YAML，因此测试结果与实用可能存在差距。
           </p>
           <p>
-            一方面，CSL-JSON中的变量与CSL样式完全匹配，不涉及从BibTeX、YAML转换，所以信息损失更少。
+            一方面，CSL-JSON中的变量与CSL样式完全匹配，不涉及从BibTeX、YAML转换，所以信息损失更少。关于信息损失的初步调查可参考本项目的{' '}
+            <ExternalLink href="https://github.com/YDX-2147483647/hayagriva-gb-tracking/tree/main/bib-interop/">
+              bit-interop 文件夹
+            </ExternalLink>
+            。
           </p>
           <p>
             另一方面，Hayagriva代码中的<code>csl-json</code>
