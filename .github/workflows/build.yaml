@@ -150,7 +150,7 @@ jobs:
 
       - uses: hustcer/setup-nu@v3
         with:
-          version: "0.112.2"
+          version: "0.113.1"
       - uses: typst-community/setup-typst@v5
         with:
           typst-version: v0.14

@@ -34,7 +34,8 @@ def check [bib: string, expr: string]: nothing -> nothing {
 def main [] {
   cd ($env.CURRENT_FILE | path dirname)
 	
-	let code_blocks = open result.md | where {|x| $x.type == "code" and $x.attrs.lang in ["bib", "typst"] } | get attrs
+	let code_blocks = open result.md --raw | from md --verbose
+		| where {|x| $x.type == "code" and $x.attrs.lang in ["bib", "typst"] } | get attrs
 	let claims = $code_blocks | enumerate | where item.lang == typst | get index | each {|expr_index|
 		let bib = $code_blocks | get ($expr_index - 1) | get value
 		let expr = $code_blocks | get $expr_index | get value

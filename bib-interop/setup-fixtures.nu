@@ -1,5 +1,5 @@
 def parse-md-fixture [file: path] {
-  let md = open $file
+  let md = open $file --raw | from md --verbose
 
   let url = $md | where type == list | get children.0.1.attrs.url | str replace '/blob/' '/raw/'
 
