@@ -1,8 +1,12 @@
 # 测试结果
 
+针对 Hayagriva [v0.9.1-33-gc324b3d (2026-05-31)](github.com/typst/hayagriva/tree/c324b3ddcdc6f1a57744c45854b198703c0e95b3)。
+
 ## 确实存在的问题
 
 ### 文献类型
+
+参见 [Consider adding all non-standard BibLaTeX types · Issue #62 · typst/biblatex](https://github.com/typst/biblatex/issues/62)。
 
 #### 不支持 biblatex 非标准文献类型
 
@@ -162,6 +166,8 @@ The LaTeX book (ISBN 0-201-52983-1) was written by Leslie Lamport. In Appendix B
 ```typst
 #assert.ne(converted.date, "2009-02") // 当前情况
 ```
+
+参见 [Numeric months are lost typst/biblatex#103](https://github.com/typst/biblatex/issues/103)、[Allow `month` to be numeric by YDX-2147483647 · Pull Request #104 · typst/biblatex](https://github.com/typst/biblatex/pull/104/changes)。
 
 #### 特殊`year`被错误简化
 
@@ -538,6 +544,8 @@ GB/T 7714—2015 曾要求「必要时，可采用双语著录」，不过 GB/T 
 ```
 
 另外还有设置`labelnumber=true`等选项的。这些选项属于 biblatex 特殊功能，可用`show text`等机制替代，不必支持，故忽略。
+
+参见 [Parse name options by Drodt · Pull Request #90 · typst/biblatex](https://github.com/typst/biblatex/pull/90)。
 
 ### 丢失`primaryclass`
 
