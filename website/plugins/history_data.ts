@@ -23,6 +23,7 @@ const categories: Category[] = [
 //   gh release list --repo typst/hayagriva --json tagName,publishedAt --limit 3
 // Note that the order matters.
 const tags = [
+  { publishedAt: '2026-06-05T11:22:06Z', tagName: 'v0.10.0' },
   { publishedAt: '2025-09-26T16:04:05Z', tagName: 'v0.9.1' },
   { publishedAt: '2025-09-25T17:26:32Z', tagName: 'v0.9.0' },
   { publishedAt: '2025-02-05T11:15:17Z', tagName: 'v0.8.1' },
@@ -50,6 +51,7 @@ const commits = `
 a2bfce8 2025-12-21T06:07:37+01:00
 a137441 2025-12-27T22:30:59Z
 292b880 2026-05-26T16:10:06+02:00
+c324b3d 2026-05-31T13:31:30+02:00
 `
 
 // To update:

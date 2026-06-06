@@ -49,6 +49,8 @@ uv run -m tracking --show-details
 uv run -m tracking --update-history history.toml
 ```
 
+更新历史后，如果分析了其它差异的具体内容，那么可能还需编辑[`RecordDetails.tsx`](./website/src/RecordDetails.tsx)中的`<SpecialCases>`。
+
 此步有缓存，位于`target/tracking-cache/`。
 
 ### 展示测试结果

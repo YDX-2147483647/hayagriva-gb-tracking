@@ -2,6 +2,7 @@ use pyo3::prelude::*;
 
 use hayagriva::archive::locales;
 use hayagriva::citationberg::{IndependentStyle, json as csl_json};
+use hayagriva::io;
 use hayagriva::{BibliographyDriver, BibliographyRequest, CitationItem, CitationRequest};
 
 /// Checks if a CSL style is considered malformed by hayagriva.
@@ -38,14 +39,16 @@ fn warn_hacky_entries(entries: &[csl_json::Item]) {
 
 /// Format a bibliography of all entries.
 ///
+/// `entries` are in CSL-JSON, and `style` is a CSL.
+///
 /// At present, the support for CSL is still quite limited. Therefore, this function returns tab-separated plain text rather than stylized HTML.
 #[pyfunction]
-fn reference(entires: &str, style: &str) -> PyResult<String> {
+fn reference(entries: &str, style: &str) -> PyResult<String> {
     let style = IndependentStyle::from_xml(style).map_err(|e| {
         pyo3::exceptions::PyValueError::new_err(format!("CSL file malformed: {:?}", e))
     })?;
 
-    let entries: Vec<csl_json::Item> = serde_json::from_str(entires).map_err(|e| {
+    let entries: Vec<csl_json::Item> = serde_json::from_str(entries).map_err(|e| {
         pyo3::exceptions::PyValueError::new_err(format!("CSL-JSON file malformed: {:?}", e))
     })?;
     warn_hacky_entries(&entries);
@@ -78,6 +81,21 @@ fn reference(entires: &str, style: &str) -> PyResult<String> {
     Ok(output)
 }
 
+/// Convert a BibLaTeX `*.bib` to hayagriva `*.yaml`
+#[pyfunction]
+fn biblatex_to_hayagriva(bib: &str) -> PyResult<String> {
+    let bibliography = io::from_biblatex_str(bib).map_err(|e| {
+        pyo3::exceptions::PyValueError::new_err(format!(
+            "Failed to parse the BibLaTeX `*.bib`: {e:?}"
+        ))
+    })?;
+    io::to_yaml_str(&bibliography).map_err(|e| {
+        pyo3::exceptions::PyValueError::new_err(format!(
+            "Failed to convert the bibliography to hayagriva `*.yaml`: {e:?}"
+        ))
+    })
+}
+
 /// A Python module implemented in Rust. The name of this function must match
 /// the `lib.name` setting in the `Cargo.toml`, else Python will not be able to
 /// import the module.
@@ -86,6 +104,7 @@ fn reference(entires: &str, style: &str) -> PyResult<String> {
 fn hayagriva_py(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(reference, m)?)?;
     m.add_function(wrap_pyfunction!(check_csl, m)?)?;
+    m.add_function(wrap_pyfunction!(biblatex_to_hayagriva, m)?)?;
 
     Ok(())
 }
