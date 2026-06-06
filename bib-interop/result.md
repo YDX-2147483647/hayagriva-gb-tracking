@@ -1,6 +1,6 @@
 # 测试结果
 
-针对 Hayagriva [v0.9.1-33-gc324b3d (2026-05-31)](github.com/typst/hayagriva/tree/c324b3ddcdc6f1a57744c45854b198703c0e95b3)。
+针对 [Hayagriva v0.10.0 (2026-06-05)](https://github.com/typst/hayagriva/releases/tag/v0.10.0)。
 
 ## 确实存在的问题
 
@@ -138,6 +138,8 @@ gbt7714.8.6.3:2:
 
 #### 不识别数字`month`
 
+<details><summary>已于 Hayagriva v0.10.0 修复</summary>
+
 > [§2.2.2 Data Fields — `biblatex.pdf`][biblatex-2.2.2]
 >
 > `month` field (literal)
@@ -164,10 +166,12 @@ The LaTeX book (ISBN 0-201-52983-1) was written by Leslie Lamport. In Appendix B
 ```
 
 ```typst
-#assert.ne(converted.date, "2009-02") // 当前情况
+#assert.eq(converted.date, "2009-02") // v0.10.0 以来情况
 ```
 
 参见 [Numeric months are lost typst/biblatex#103](https://github.com/typst/biblatex/issues/103)、[Allow `month` to be numeric by YDX-2147483647 · Pull Request #104 · typst/biblatex](https://github.com/typst/biblatex/pull/104/changes)。
+
+</details>
 
 #### 特殊`year`被错误简化
 

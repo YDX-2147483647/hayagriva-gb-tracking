@@ -23,6 +23,7 @@ const categories: Category[] = [
 //   gh release list --repo typst/hayagriva --json tagName,publishedAt --limit 3
 // Note that the order matters.
 const tags = [
+  { publishedAt: '2026-06-05T11:22:06Z', tagName: 'v0.10.0' },
   { publishedAt: '2025-09-26T16:04:05Z', tagName: 'v0.9.1' },
   { publishedAt: '2025-09-25T17:26:32Z', tagName: 'v0.9.0' },
   { publishedAt: '2025-02-05T11:15:17Z', tagName: 'v0.8.1' },
