@@ -8,7 +8,7 @@ import httpx
 
 from .util import CACHE_DIR
 
-ZOTERO_CHINESE_REPO = "https://github.com/zotero-chinese/styles/raw/ce0786d7"
+ZOTERO_CHINESE_REPO = "https://github.com/zotero-chinese/styles/raw/336da08"
 CSL_SANITIZER_WEBSITE = "https://typst-doc-cn.github.io/csl-sanitizer"
 
 assert not ZOTERO_CHINESE_REPO.endswith("/")
@@ -72,11 +72,11 @@ def ensure_fixture() -> None:
 
 
 def _extract_gb_example(index_md: str) -> Generator[str]:
-    """Extract “GB/T 7714—2015 示例文献” from `index.md`."""
+    """Extract “GB/T 7714—2025 示例文献” from `index.md`."""
     lines = iter(index_md.splitlines())
 
     while (line := next(lines, None)) is not None:
-        if line == "### GB/T 7714—2015 示例文献":
+        if line == "### GB/T 7714—2025 示例文献":
             break
 
     while (line := next(lines, None)) is not None:
