@@ -23,6 +23,7 @@ const categories: Category[] = [
 //   gh release list --repo typst/hayagriva --json tagName,publishedAt --limit 3
 // Note that the order matters.
 const tags = [
+  { publishedAt: '2026-06-14T10:08:05Z', tagName: 'v0.10.1' },
   { publishedAt: '2026-06-05T11:22:06Z', tagName: 'v0.10.0' },
   { publishedAt: '2025-09-26T16:04:05Z', tagName: 'v0.9.1' },
   { publishedAt: '2025-09-25T17:26:32Z', tagName: 'v0.9.0' },
@@ -58,6 +59,7 @@ c324b3d 2026-05-31T13:31:30+02:00
 //   gh release list --repo typst/typst --json tagName,publishedAt --limit 3
 // Note that the order matters.
 const typstTags = [
+  { publishedAt: '2026-06-09T17:56:55Z', tagName: 'v0.15.0-rc.1' },
   { publishedAt: '2025-12-12T17:49:37Z', tagName: 'v0.14.2' },
   { publishedAt: '2025-12-03T17:10:21Z', tagName: 'v0.14.1' },
   { publishedAt: '2025-10-24T12:27:35Z', tagName: 'v0.14.0' },

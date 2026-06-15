@@ -9,7 +9,7 @@ name = "hayagriva"
 crate-type = ["cdylib"]
 
 [dependencies]
-hayagriva = { git = "https://github.com/typst/hayagriva", version = "0.10.0", features = ["csl-json", "archive", "biblatex"], default-features = false, tag = "v0.10.0" }
+hayagriva = { git = "https://github.com/typst/hayagriva", version = "0.10.1", features = ["csl-json", "archive", "biblatex"], default-features = false, tag = "v0.10.1" }
 serde_json = "1.0.149"
 
 [dependencies.pyo3]
