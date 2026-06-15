@@ -1,6 +1,6 @@
 # 测试结果
 
-针对 [Hayagriva v0.10.0 (2026-06-05)](https://github.com/typst/hayagriva/releases/tag/v0.10.0)。
+针对 [Hayagriva v0.10.1 (2026-06-14)](https://github.com/typst/hayagriva/releases/tag/v0.10.1)。
 
 ## 确实存在的问题
 
