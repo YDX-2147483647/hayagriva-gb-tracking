@@ -168,6 +168,7 @@ const SPECIAL_CASES = {
   'main (c324b3d)': '2026-05-26',
   'v0.10.0': '2026-05-26',
   'v0.10.1': '2026-05-26',
+  'main (5a71313)': '2026-05-26',
 }
 function getSpecialCaseVersion(recordLabel: string): string | null {
   const target = recordLabel.replaceAll('\n', ' ')

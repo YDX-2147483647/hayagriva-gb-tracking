@@ -53,12 +53,14 @@ a2bfce8 2025-12-21T06:07:37+01:00
 a137441 2025-12-27T22:30:59Z
 292b880 2026-05-26T16:10:06+02:00
 c324b3d 2026-05-31T13:31:30+02:00
+5a71313 2026-07-15T10:21:09+02:00
 `
 
 // To update:
 //   gh release list --repo typst/typst --json tagName,publishedAt --limit 3
 // Note that the order matters.
 const typstTags = [
+  { publishedAt: '2026-07-17T11:12:06Z', tagName: 'v0.15.1' },
   { publishedAt: '2026-06-15T17:07:58Z', tagName: 'v0.15.0' },
   { publishedAt: '2026-06-09T17:56:55Z', tagName: 'v0.15.0-rc.1' },
   { publishedAt: '2025-12-12T17:49:37Z', tagName: 'v0.14.2' },

@@ -113,7 +113,7 @@ checksum = "ed5909b6e89a2db4456e54cd5f673791d7eca6732202bbf2a9cc504fe2f9b84a"
 [[package]]
 name = "hayagriva"
 version = "0.10.1"
-source = "git+https://github.com/typst/hayagriva?tag=v0.10.1#e51299ecd1a9f62b2f069af2f554ae4e84d50527"
+source = "git+https://github.com/typst/hayagriva?branch=main#5a7131398d4ea13731d64b12a72316cb99658695"
 dependencies = [
  "biblatex",
  "ciborium",
