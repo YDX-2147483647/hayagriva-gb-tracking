@@ -155,6 +155,11 @@ function calculateTypstInfo(date: string): HistoryRecord['typstInfo'] {
     const hayaDate = new Date(publishedAt)
     return firstCoveredTypst >= hayaDate && hayaDate > lastUncoveredTypst
   })
+  if (coveredHayagrivaList.length === 0) {
+    // `firstCoveredTypst` is a false positive. The typst version is bumped without updating hayagriva.
+    return null
+  }
+
   const start = coveredHayagrivaList[coveredHayagrivaList.length - 1].tagName
   const end = coveredHayagrivaList[0].tagName
 
