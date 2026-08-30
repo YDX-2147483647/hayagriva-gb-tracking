@@ -169,6 +169,9 @@ const SPECIAL_CASES = {
   'v0.10.0': '2026-05-26',
   'v0.10.1': '2026-05-26',
   'main (5a71313)': '2026-05-26',
+
+  // Changed because https://github.com/zotero-chinese/styles/pull/709 changed punctuation marks in CSL from narrow to fullwidth.
+  'main (79a4cc3)': '2026-08-30',
 }
 function getSpecialCaseVersion(recordLabel: string): string | null {
   const target = recordLabel.replaceAll('\n', ' ')
@@ -217,13 +220,16 @@ function SpecialCases({
             <td></td>
             <td>en dash 与 hyphen minus 的区别（可能是citeproc-js不对？）</td>
           </tr>
-          {v >= SPECIAL_CASES['main (292b880)'] && (
-            <tr>
-              <td>[24]</td>
-              <td>lang + case</td>
-              <td>en dash 与 hyphen minus 的区别（可能是citeproc-js不对？）</td>
-            </tr>
-          )}
+          {SPECIAL_CASES['main (292b880)'] <= v &&
+            v < SPECIAL_CASES['main (5a71313)'] && (
+              <tr>
+                <td>[24]</td>
+                <td>lang + case</td>
+                <td>
+                  en dash 与 hyphen minus 的区别（可能是citeproc-js不对？）
+                </td>
+              </tr>
+            )}
           <tr>
             <td>[88]</td>
             <td>lang</td>
