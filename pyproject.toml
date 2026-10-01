@@ -6,7 +6,7 @@ build-backend = "maturin"
 dev = [
     "click>=8.4.1",
     "httpx>=0.28.1",
-    "regex>=2026.5.9",
+    "regex>=2026.9.10",
     "tomlkit>=0.15.0",
 ]
 
