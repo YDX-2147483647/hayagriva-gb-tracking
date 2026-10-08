@@ -11,13 +11,13 @@ from typing import Literal, Self
 import tomllib
 
 from .diff import Difference, Ignorance
-from .fixture import FILE, ZOTERO_CHINESE_REPO
+from .fixture import FILE, ZOTERO_CHINESE_REPO_REF
 
 
 @dataclass
 class InputVersion:
     entries_rev: str
-    """A string describing the git revision for entries and the CSL style."""
+    """A string describing the git revision for entries."""
     csl_updated_at: str
     """The `<updated>` field in the CSL style, an ISO datetime with timezone, kept in its original form."""
     hayagriva_source: str
@@ -25,7 +25,7 @@ class InputVersion:
 
     @classmethod
     def build(cls) -> Self:
-        entries_rev = ZOTERO_CHINESE_REPO.split("/")[-1]
+        entries_rev = ZOTERO_CHINESE_REPO_REF.split("/")[-1]
         assert re.match(r"^[0-9a-f]{7,}$", entries_rev)
 
         csl_updated_at = (

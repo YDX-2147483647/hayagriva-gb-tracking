@@ -2,17 +2,21 @@ import xml.etree.ElementTree as ET
 from collections.abc import Generator
 from dataclasses import dataclass
 from pathlib import Path
+from subprocess import run
 from sys import stderr
 
 import httpx
 
 from .util import CACHE_DIR
 
-ZOTERO_CHINESE_REPO = "https://github.com/zotero-chinese/styles/raw/ce0786d7"
-CSL_SANITIZER_WEBSITE = "https://typst-doc-cn.github.io/csl-sanitizer"
+# Use the last version that uses the 2015 examples.
+ZOTERO_CHINESE_REPO_REF = "https://github.com/zotero-chinese/styles/raw/ce0786d7"
 
-assert not ZOTERO_CHINESE_REPO.endswith("/")
-assert not CSL_SANITIZER_WEBSITE.endswith("/")
+# Use the last version before the punctuation marks were changed to fullwidth forms.
+ZOTERO_CHINESE_REPO_CSL = "https://github.com/zotero-chinese/styles/raw/6950326^"
+
+assert not ZOTERO_CHINESE_REPO_REF.endswith("/")
+assert ZOTERO_CHINESE_REPO_CSL.endswith("^")
 
 
 @dataclass(frozen=True)
@@ -48,7 +52,7 @@ def ensure_fixture() -> None:
     if not FILE.entries.exists():
         FILE.entries.write_text(
             _download(
-                f"{ZOTERO_CHINESE_REPO}/lib/data/items/gbt7714-data.json",
+                f"{ZOTERO_CHINESE_REPO_REF}/lib/data/items/gbt7714-data.json",
             ),
             encoding="utf-8",
         )
@@ -56,14 +60,15 @@ def ensure_fixture() -> None:
     if not FILE.csl.exists():
         FILE.csl.write_text(
             _download(
-                f"{CSL_SANITIZER_WEBSITE}/chinese/src/GB-T-7714—2015（顺序编码，双语）/GB-T-7714—2015（顺序编码，双语）.csl",
+                f"{ZOTERO_CHINESE_REPO_CSL}/src/GB-T-7714—2015（顺序编码，双语）/GB-T-7714—2015（顺序编码，双语）.csl",
             ),
             encoding="utf-8",
         )
+        run(["uv", "run", "csl-sanitizer", FILE.csl, FILE.csl], check=True)
 
     if not FILE.expected_output.exists():
         index_md = _download(
-            f"{ZOTERO_CHINESE_REPO}/src/GB-T-7714—2015（顺序编码，双语）/index.md",
+            f"{ZOTERO_CHINESE_REPO_REF}/src/GB-T-7714—2015（顺序编码，双语）/index.md",
         )
         FILE.expected_output.write_text(
             _extract_expected_output(index_md),

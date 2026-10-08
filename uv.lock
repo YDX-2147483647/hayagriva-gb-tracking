@@ -7,6 +7,7 @@ requires-python = ">=3.14"
 [manifest.dependency-groups]
 dev = [
     { name = "click", specifier = ">=8.4.1" },
+    { name = "csl-sanitizer", extras = ["cli"], url = "https://github.com/typst-doc-cn/csl-sanitizer/archive/49af731bb0f0e55b3e945a58e427416be326ed3f.zip" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "regex", specifier = ">=2026.5.9" },
     { name = "tomlkit", specifier = ">=0.15.0" },
@@ -42,6 +43,21 @@ sdist = { url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c7/0e/7f
 wheels = [
     { url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/58/50/6c0d534c5f134586a8e1ba4e330569e32f057e33372ae556463212fb4cd3/click-8.5.0-py3-none-any.whl", hash = "sha256:255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360", size = 125251, upload-time = "2026-08-26T13:33:12.928Z" },
 ]
+
+[[package]]
+name = "csl-sanitizer"
+version = "0.1.0"
+source = { url = "https://github.com/typst-doc-cn/csl-sanitizer/archive/49af731bb0f0e55b3e945a58e427416be326ed3f.zip" }
+sdist = { hash = "sha256:c6795089336aa3bcd6d69126f65692e4e081775cfd7b0402e0efe08e93b1ecdf" }
+
+[package.optional-dependencies]
+cli = [
+    { name = "click" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "click", marker = "extra == 'cli'", specifier = ">=8.5.0" }]
+provides-extras = ["cli"]
 
 [[package]]
 name = "h11"

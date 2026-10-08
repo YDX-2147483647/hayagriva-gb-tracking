@@ -67,6 +67,11 @@ export default function Postscript(): JSX.Element {
       <ul>
         <li>
           <p>
+            上表中各链接都指向最新版，但测试使用的是历史版本，与最新版稍有不同。
+          </p>
+        </li>
+        <li>
+          <p>
             比较时<strong>只比较了文本内容</strong>，未考虑链接等特殊样式。
           </p>
         </li>

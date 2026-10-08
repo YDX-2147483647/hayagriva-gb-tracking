@@ -5,6 +5,7 @@ build-backend = "maturin"
 [dependency-groups]
 dev = [
     "click>=8.4.1",
+    "csl-sanitizer[cli]",
     "httpx>=0.28.1",
     "regex>=2026.5.9",
     "tomlkit>=0.15.0",
@@ -15,3 +16,6 @@ src = ["tracking"]
 
 [tool.ruff.lint]
 extend-select = ["U", "TYP", "F", "I"]
+
+[tool.uv.sources]
+csl-sanitizer = { url = "https://github.com/typst-doc-cn/csl-sanitizer/archive/49af731bb0f0e55b3e945a58e427416be326ed3f.zip" }
