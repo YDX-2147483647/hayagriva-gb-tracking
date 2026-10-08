@@ -9,7 +9,7 @@ import type {
   HistoryRecord,
   InputVersion,
   OutputSummary,
-} from '../src/types'
+} from '../src/types.ts'
 
 /// Categories of differences, ordered.
 const categories: Category[] = [
@@ -93,7 +93,7 @@ const typstTags = [
   { publishedAt: '2023-03-21T17:23:21Z', tagName: 'v23-03-21' },
 ]
 
-const ROOT = path.resolve(__dirname, '..')
+const ROOT = path.resolve(import.meta.dirname, '..')
 
 /** A map from tag names to their published dates */
 const tagDates: Record<string, string> = Object.fromEntries(
