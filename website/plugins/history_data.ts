@@ -23,6 +23,7 @@ const categories: Category[] = [
 //   gh release list --repo typst/hayagriva --json tagName,publishedAt --limit 3
 // Note that the order matters.
 const tags = [
+  { publishedAt: '2026-06-14T10:08:05Z', tagName: 'v0.10.1' },
   { publishedAt: '2026-06-05T11:22:06Z', tagName: 'v0.10.0' },
   { publishedAt: '2025-09-26T16:04:05Z', tagName: 'v0.9.1' },
   { publishedAt: '2025-09-25T17:26:32Z', tagName: 'v0.9.0' },
@@ -52,12 +53,17 @@ a2bfce8 2025-12-21T06:07:37+01:00
 a137441 2025-12-27T22:30:59Z
 292b880 2026-05-26T16:10:06+02:00
 c324b3d 2026-05-31T13:31:30+02:00
+5a71313 2026-07-15T10:21:09+02:00
+79a4cc3 2026-08-29T18:42:47+02:00
 `
 
 // To update:
 //   gh release list --repo typst/typst --json tagName,publishedAt --limit 3
 // Note that the order matters.
 const typstTags = [
+  { publishedAt: '2026-07-17T11:12:06Z', tagName: 'v0.15.1' },
+  { publishedAt: '2026-06-15T17:07:58Z', tagName: 'v0.15.0' },
+  { publishedAt: '2026-06-09T17:56:55Z', tagName: 'v0.15.0-rc.1' },
   { publishedAt: '2025-12-12T17:49:37Z', tagName: 'v0.14.2' },
   { publishedAt: '2025-12-03T17:10:21Z', tagName: 'v0.14.1' },
   { publishedAt: '2025-10-24T12:27:35Z', tagName: 'v0.14.0' },
@@ -150,6 +156,11 @@ function calculateTypstInfo(date: string): HistoryRecord['typstInfo'] {
     const hayaDate = new Date(publishedAt)
     return firstCoveredTypst >= hayaDate && hayaDate > lastUncoveredTypst
   })
+  if (coveredHayagrivaList.length === 0) {
+    // `firstCoveredTypst` is a false positive. The typst version is bumped without updating hayagriva.
+    return null
+  }
+
   const start = coveredHayagrivaList[coveredHayagrivaList.length - 1].tagName
   const end = coveredHayagrivaList[0].tagName
 
