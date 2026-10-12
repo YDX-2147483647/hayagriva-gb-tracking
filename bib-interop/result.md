@@ -319,7 +319,7 @@ CSTR（科技资源标识符, common science and technology resource identifier�
 #assert.eq(converted.keys(), ("type", "title", "genre")) // 当前情况
 ```
 
-参见 [clreq-gap for typst §7.2  参考文献表：英文用`et al.`，中文用`等`](https://gap.zhtyp.art/#et-al-lang)。
+参见 [clreq-gap for typst §7.2  参考文献表：英文用`et al.`，中文用`等`](https://gap.zhtyp.top/#et-al-lang)。
 
 #### 不支持多语种对照的文献表
 

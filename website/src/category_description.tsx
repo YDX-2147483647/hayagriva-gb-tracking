@@ -4,13 +4,13 @@ import type { Category } from './types'
 
 export const descriptions: Record<Category, JSX.Element> = {
   lang: (
-    <ExternalLink href="https://gap.zhtyp.art/#et-al-lang">
+    <ExternalLink href="https://gap.zhtyp.top/#et-al-lang">
       <code>等</code>/<code>et al.</code>等语言翻译问题
     </ExternalLink>
   ),
   case: <span>大小写问题（例：英文机构名称被全大写）</span>,
   卷: (
-    <ExternalLink href="https://gap.zhtyp.art/#csl-is-numeric">
+    <ExternalLink href="https://gap.zhtyp.top/#csl-is-numeric">
       多<code>卷</code>字（例：<code>第4册</code>误为<code>卷 第4册</code>）
     </ExternalLink>
   ),
@@ -20,7 +20,7 @@ export const descriptions: Record<Category, JSX.Element> = {
     </span>
   ),
   code_space: (
-    <ExternalLink href="https://gap.zhtyp.art/#bib-num-trim-before">
+    <ExternalLink href="https://gap.zhtyp.top/#bib-num-trim-before">
       代码中的空格错误（例：<code>GB/T 123</code>误为<code>GB/T123</code>）
     </ExternalLink>
   ),
@@ -30,7 +30,7 @@ export const descriptions: Record<Category, JSX.Element> = {
     </span>
   ),
   num: (
-    <ExternalLink href="https://gap.zhtyp.art/#bib-num-trim-before">
+    <ExternalLink href="https://gap.zhtyp.top/#bib-num-trim-before">
       数码格式错误（例：<code>011</code>误为<code>11</code>）
     </ExternalLink>
   ),

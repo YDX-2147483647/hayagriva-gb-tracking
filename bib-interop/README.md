@@ -43,7 +43,7 @@ csl[CSL 样式] --> node
 - 主页面：(CSL-JSON, CSL 样式) ↦ 引用与著录列表
 - 此部分：BibLaTeX `*.bib` ↦ Hayagriva `*.yaml`
 
-由于此部分不直接对应最终输出，故只检查信息丢失。像[`institution`理解成`publisher`还是`authority`](https://gap.zhtyp.art/#publisher-alias)这样的映射争议不在测试范围内。
+由于此部分不直接对应最终输出，故只检查信息丢失。像[`institution`理解成`publisher`还是`authority`](https://gap.zhtyp.top/#publisher-alias)这样的映射争议不在测试范围内。
 
 ## 测试用例
 

@@ -25,7 +25,7 @@ function App(): JSX.Element {
               <strong>提示：</strong>
               GB/T
               7714—2025已于2026年7月1日实施。为方便对比历史，本项目近期仍针对2015版国标；建议一同参考
-              <ExternalLink href="https://gb7714.zhtyp.art">
+              <ExternalLink href="https://gb7714.zhtyp.top">
                 另一项目针对2025版国标的测试结果
               </ExternalLink>
               。
